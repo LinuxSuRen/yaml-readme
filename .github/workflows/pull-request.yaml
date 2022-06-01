@@ -1,0 +1,24 @@
+name: Pull Request Build
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Set up Go 1.18
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+        id: go
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v3.0.0
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v2.9.1
+        with:
+          version: latest
+          args: release --skip-publish --rm-dist
