@@ -1,0 +1,24 @@
+name: 'Orbit Assistant'
+description: 'Orbit Assistant'
+inputs:
+  pattern:
+    description: 'The pattern of the items'
+    required: true
+    default: 'items/*.yaml'
+  username:
+    description: 'The username of the git repository'
+    required: true
+  org:
+    description: 'The org of the current repo'
+    required: true
+  repo:
+    description: 'The repo name'
+    required: true
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.pattern }}
+    - ${{ inputs.username }}
+    - ${{ inputs.org }}
+    - ${{ inputs.repo }}

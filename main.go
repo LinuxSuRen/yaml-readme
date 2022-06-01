@@ -17,7 +17,7 @@ type option struct {
 }
 
 func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
-	var items []map[string]string
+	var items []map[string]interface{}
 
 	// find YAML files
 	var files []string
@@ -29,14 +29,14 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 				continue
 			}
 
-			metaMap := make(map[string]string)
+			metaMap := make(map[string]interface{})
 			if err = yaml.Unmarshal(data, metaMap); err != nil {
 				cmd.PrintErrf("failed to parse file [%s] as a YAML, error: %v\n", metaFile, err)
 				continue
 			}
 
 			filename := strings.TrimSuffix(filepath.Base(metaFile), filepath.Ext(metaFile))
-			parentname := filepath.Dir(filepath.Dir(metaFile))
+			parentname := filepath.Base(filepath.Dir(metaFile))
 
 			metaMap["filename"] = filename
 			metaMap["parentname"] = parentname
