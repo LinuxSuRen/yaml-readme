@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type option struct {
@@ -33,6 +34,13 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 				cmd.PrintErrf("failed to parse file [%s] as a YAML, error: %v\n", metaFile, err)
 				continue
 			}
+
+			filename := strings.TrimSuffix(filepath.Base(metaFile), filepath.Ext(metaFile))
+			parentname := filepath.Dir(filepath.Dir(metaFile))
+
+			metaMap["filename"] = filename
+			metaMap["parentname"] = parentname
+
 			items = append(items, metaMap)
 		}
 	}
