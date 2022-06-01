@@ -1,5 +1,5 @@
-name: 'Orbit Assistant'
-description: 'Orbit Assistant'
+name: 'README helper'
+description: 'A helper to generate README automatically'
 inputs:
   pattern:
     description: 'The pattern of the items'
