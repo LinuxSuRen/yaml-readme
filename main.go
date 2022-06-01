@@ -24,13 +24,13 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 	if files, err = filepath.Glob(o.pattern); err == nil {
 		for _, metaFile := range files {
 			if data, err = ioutil.ReadFile(metaFile); err != nil {
-				fmt.Println("failed to read file", metaFile, err)
+				cmd.PrintErrf("failed to read file [%s], error: %v\n", metaFile, err)
 				continue
 			}
 
 			metaMap := make(map[string]string)
 			if err = yaml.Unmarshal(data, metaMap); err != nil {
-				fmt.Printf("failed to parse file [%s] as a YAML, error: %v\n", metaFile, err)
+				cmd.PrintErrf("failed to parse file [%s] as a YAML, error: %v\n", metaFile, err)
 				continue
 			}
 			items = append(items, metaMap)
