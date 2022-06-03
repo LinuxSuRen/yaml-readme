@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -15,6 +16,7 @@ type option struct {
 	pattern       string
 	templateFile  string
 	includeHeader bool
+	sortBy        string
 }
 
 func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
@@ -48,9 +50,14 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 
 			metaMap["filename"] = filename
 			metaMap["parentname"] = parentname
+			metaMap["fullpath"] = metaFile
 
 			items = append(items, metaMap)
 		}
+	}
+
+	if o.sortBy != "" {
+		sortBy(items, o.sortBy)
 	}
 
 	// load readme template
@@ -80,6 +87,21 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 	return
 }
 
+func sortBy(items []map[string]interface{}, sortBy string) {
+	sort.SliceStable(items, func(i, j int) bool {
+		left, ok := items[i][sortBy].(string)
+		if !ok {
+			return false
+		}
+		right, ok := items[j][sortBy].(string)
+		if !ok {
+			return false
+		}
+
+		return strings.Compare(left, right) < 0
+	})
+}
+
 func main() {
 	opt := &option{}
 	cmd := cobra.Command{
@@ -94,6 +116,9 @@ func main() {
 		"The template file which should follow Golang template spec")
 	flags.BoolVarP(&opt.includeHeader, "include-header", "", true,
 		"Indicate if include a notice header on the top of the README file")
+	flags.StringVarP(&opt.sortBy, "sort-by", "", "",
+		"Sort the array data by which field")
+
 	err := cmd.Execute()
 	if err != nil {
 		panic(err)

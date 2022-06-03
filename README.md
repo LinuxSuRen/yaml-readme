@@ -36,3 +36,33 @@ In case you want to ignore some particular items, you can put a key `ignore` wit
 name: rick
 ignore: true
 ```
+
+## Use in GitHub actions
+
+You could copy the following sample YAML, and change some variables according to your needs.
+```yaml
+name: generator
+
+on:
+  push:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Update readme
+        uses: linuxsuren/yaml-readme@v0.0.5
+        env:
+          GH_TOKEN: ${{ secrets.GH_SECRETS }}
+        with:
+          pattern: 'config/*/*.yml'
+          username: linuxsuren
+          org: linuxsuren
+          repo: hd-home
+```
