@@ -14,6 +14,9 @@ inputs:
   repo:
     description: 'The repo name'
     required: true
+  sortby:
+    description: 'The field which sort by'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -22,3 +25,4 @@ runs:
     - ${{ inputs.username }}
     - ${{ inputs.org }}
     - ${{ inputs.repo }}
+    - ${{ inputs.sortby }}
