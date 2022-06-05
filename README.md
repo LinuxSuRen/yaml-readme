@@ -27,6 +27,7 @@ Flags:
 |---|---|
 | `filename` | The filename of a particular item file. For example, `items/good.yaml`, the filename is `good`. |
 | `parentname` | The parent directory name. For example, `items/good.yaml`, the parent name is `items`. |
+| `fullpath` | The related file path of each items. |
 
 ### Ignore particular items
 
