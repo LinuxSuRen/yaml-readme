@@ -67,3 +67,22 @@ jobs:
           org: linuxsuren
           repo: hd-home
 ```
+
+### Samples
+
+Below is a grouped data sample:
+```gotemplate
+{{- range $key, $val := .}}
+Year: {{$key}}
+| Name | Age |
+|---|---|
+{{- range $item := $val}}
+| {{$item.name}} | {{$item.age}} |
+{{- end}}
+{{end}}
+```
+
+You could use the following command to render it:
+```shell
+yaml-readme --group-by year
+```
