@@ -3,12 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"html/template"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -17,10 +18,12 @@ type option struct {
 	templateFile  string
 	includeHeader bool
 	sortBy        string
+	groupBy       string
 }
 
 func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 	var items []map[string]interface{}
+	groupData := make(map[string][]map[string]interface{})
 
 	// find YAML files
 	var files []string
@@ -51,6 +54,24 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 			metaMap["filename"] = filename
 			metaMap["parentname"] = parentname
 			metaMap["fullpath"] = metaFile
+
+			if val, ok := metaMap[o.groupBy]; ok && val != "" {
+				var strVal string
+				switch val.(type) {
+				case string:
+					strVal = val.(string)
+				case int:
+					strVal = strconv.Itoa(val.(int))
+				}
+
+				if _, ok := groupData[strVal]; ok {
+					groupData[strVal] = append(groupData[strVal], metaMap)
+				} else {
+					groupData[strVal] = []map[string]interface{}{
+						metaMap,
+					}
+				}
+			}
 
 			items = append(items, metaMap)
 		}
@@ -83,7 +104,13 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 	if tpl, err = template.New("readme").Parse(readmeTpl); err != nil {
 		return
 	}
-	err = tpl.Execute(os.Stdout, items)
+
+	// render it with grouped data
+	if o.groupBy != "" {
+		err = tpl.Execute(os.Stdout, groupData)
+	} else {
+		err = tpl.Execute(os.Stdout, items)
+	}
 	return
 }
 
@@ -118,6 +145,8 @@ func main() {
 		"Indicate if include a notice header on the top of the README file")
 	flags.StringVarP(&opt.sortBy, "sort-by", "", "",
 		"Sort the array data by which field")
+	flags.StringVarP(&opt.groupBy, "group-by", "", "",
+		"Group the array data by which field")
 
 	err := cmd.Execute()
 	if err != nil {
