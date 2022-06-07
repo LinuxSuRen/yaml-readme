@@ -70,6 +70,16 @@ jobs:
 
 ### Samples
 
+Below is a simple template sample:
+```gotemplate
+The total number of tools is: {{len .}}
+| Name | Latest | Download |
+|---|---|---|
+{{- range $val := .}}
+| {{$val.name}} | {{$val.latest}} | {{$val.download}} |
+{{- end}}
+```
+
 Below is a grouped data sample:
 ```gotemplate
 {{- range $key, $val := .}}
