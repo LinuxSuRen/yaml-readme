@@ -32,6 +32,10 @@ inputs:
     description: 'Indicate if you want to push the changes automatically'
     default: true
     required: true
+  pushbranch:
+    description: 'Branch to be pushed'
+    required: true
+    default: 'master'
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -45,3 +49,4 @@ runs:
     - ${{ inputs.output }}
     - ${{ inputs.template }}
     - ${{ inputs.push }}
+    - ${{ inputs.pushbranch }}
