@@ -28,6 +28,10 @@ inputs:
   groupby:
     description: 'The filed which group by'
     required: false
+  push:
+    description: 'Indicate if you want to push the changes automatically'
+    default: true
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -40,3 +44,4 @@ runs:
     - ${{ inputs.groupby }}
     - ${{ inputs.output }}
     - ${{ inputs.template }}
+    - ${{ inputs.push }}
