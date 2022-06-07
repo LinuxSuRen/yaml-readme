@@ -78,7 +78,12 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 	}
 
 	if o.sortBy != "" {
-		sortBy(items, o.sortBy)
+		descending := true
+		if strings.HasPrefix(o.sortBy, "!") {
+			o.sortBy = strings.TrimPrefix(o.sortBy, "!")
+			descending = false
+		}
+		sortBy(items, o.sortBy, descending)
 	}
 
 	// load readme template
@@ -114,8 +119,8 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 	return
 }
 
-func sortBy(items []map[string]interface{}, sortBy string) {
-	sort.SliceStable(items, func(i, j int) bool {
+func sortBy(items []map[string]interface{}, sortBy string, descending bool) {
+	sort.SliceStable(items, func(i, j int) (compare bool) {
 		left, ok := items[i][sortBy].(string)
 		if !ok {
 			return false
@@ -125,7 +130,11 @@ func sortBy(items []map[string]interface{}, sortBy string) {
 			return false
 		}
 
-		return strings.Compare(left, right) < 0
+		compare = strings.Compare(left, right) < 0
+		if !descending {
+			compare = !compare
+		}
+		return
 	})
 }
 
@@ -144,12 +153,12 @@ func main() {
 	flags.BoolVarP(&opt.includeHeader, "include-header", "", true,
 		"Indicate if include a notice header on the top of the README file")
 	flags.StringVarP(&opt.sortBy, "sort-by", "", "",
-		"Sort the array data by which field")
+		"Sort the array data descending by which field, or sort it ascending with the prefix '!'. For example: --sort-by !year")
 	flags.StringVarP(&opt.groupBy, "group-by", "", "",
 		"Group the array data by which field")
 
 	err := cmd.Execute()
 	if err != nil {
-		panic(err)
+		os.Exit(1)
 	}
 }

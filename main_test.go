@@ -66,7 +66,7 @@ func Test_sortBy(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			sortBy(tt.args.items, tt.args.sortBy)
+			sortBy(tt.args.items, tt.args.sortBy, true)
 			tt.verify(tt.args.items, t)
 		})
 	}
