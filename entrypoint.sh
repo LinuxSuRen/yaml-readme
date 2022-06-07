@@ -1,6 +1,6 @@
 #!/bin/sh
 
-yaml-readme -p "$1" --sort-by "$5" --group-by "$5" > "$6"
+yaml-readme -p "$1" --sort-by "$5" --group-by "$6" --template "$8" > "$7"
 
 git config --local user.email "LinuxSuRen@users.noreply.github.com"
 git config --local user.name "rick"

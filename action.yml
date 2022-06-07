@@ -5,6 +5,10 @@ inputs:
     description: 'The pattern of the items'
     required: true
     default: 'items/*.yaml'
+  template:
+    description: 'The template file path'
+    required: false
+    default: 'README.tpl'
   output:
     description: 'The output of the render result'
     required: true
@@ -35,3 +39,4 @@ runs:
     - ${{ inputs.sortby }}
     - ${{ inputs.groupby }}
     - ${{ inputs.output }}
+    - ${{ inputs.template }}
