@@ -1,6 +1,6 @@
 #!/bin/sh
 
-yaml-readme -p "$1" --sort-by "$5" > README.md
+yaml-readme -p "$1" --sort-by "$5" --group-by "$5" > "$6"
 
 git config --local user.email "LinuxSuRen@users.noreply.github.com"
 git config --local user.name "rick"

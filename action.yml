@@ -5,6 +5,10 @@ inputs:
     description: 'The pattern of the items'
     required: true
     default: 'items/*.yaml'
+  output:
+    description: 'The output of the render result'
+    required: true
+    default: 'README.md'
   username:
     description: 'The username of the git repository'
     required: true
@@ -17,6 +21,9 @@ inputs:
   sortby:
     description: 'The field which sort by'
     required: false
+  groupby:
+    description: 'The filed which group by'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -26,3 +33,5 @@ runs:
     - ${{ inputs.org }}
     - ${{ inputs.repo }}
     - ${{ inputs.sortby }}
+    - ${{ inputs.groupby }}
+    - ${{ inputs.output }}
