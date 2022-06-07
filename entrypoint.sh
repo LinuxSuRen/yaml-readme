@@ -9,11 +9,5 @@ then
   git add .
 
   git commit -m "Auto commit by rick's bot, ci skip"
-  git push https://${2}:${GH_TOKEN}@github.com/${3}/${4}.git HEAD:master
-  git commit -m "Auto commit by rick's bot, ci skip"
-  if [ ! -n "$10" ] ;then
-    git push https://${2}:${GH_TOKEN}@github.com/${3}/${4}.git HEAD:master
-  else
-    git push https://${2}:${GH_TOKEN}@github.com/${3}/${4}.git HEAD:"$10"
-  fi
+  git push https://${2}:${GH_TOKEN}@github.com/${3}/${4}.git
 fi

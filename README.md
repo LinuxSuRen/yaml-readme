@@ -66,7 +66,6 @@ jobs:
           username: linuxsuren
           org: linuxsuren
           repo: hd-home
-          pushbranch: main # Specifies the branch to which the generated content will be pushed. The default is master
 ```
 
 ### Samples
