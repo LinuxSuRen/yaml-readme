@@ -4,4 +4,4 @@ README.tpl
 dist/
 bin/
 .idea/
-
+.vscode/
