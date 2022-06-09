@@ -114,7 +114,9 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 			if data, err = exec.Command(cmd, "--help").Output(); err != nil {
 				_, _ = fmt.Fprintln(os.Stderr, "failed to run command", cmd)
 			} else {
-				output = string(data)
+				output = fmt.Sprintf(`%s
+%s
+%s`, "```shell", string(data), "```")
 			}
 			return
 		},

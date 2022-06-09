@@ -45,7 +45,7 @@ runs:
     - --repo=${{ inputs.repo }}
     - --sortby=${{ inputs.sortby }}
     - --groupby=${{ inputs.groupby }}
-    - --output${{ inputs.output }}
+    - --output=${{ inputs.output }}
     - --template=${{ inputs.template }}
     - --push=${{ inputs.push }}
     - --tool=${{ inputs.tool }}
