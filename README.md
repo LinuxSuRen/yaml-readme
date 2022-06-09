@@ -96,3 +96,15 @@ You could use the following command to render it:
 ```shell
 yaml-readme --group-by year
 ```
+
+Assume there is a complex YAML like this:
+```yaml
+metadata:
+  annotations:
+    group/key: 'a value'
+```
+
+then you can use the following template:
+```gotemplate
+{{index $item.metadata.annotations "group/key"}}
+```
