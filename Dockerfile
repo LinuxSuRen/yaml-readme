@@ -26,7 +26,12 @@ RUN apk add --no-cache \
         git \
         openssh-client \
         libc6-compat \
-        libstdc++
+        libstdc++ \
+        curl
+
+RUN curl -L https://github.com/LinuxSuRen/http-downloader/releases/download/v0.0.67/hd-linux-amd64.tar.gz | tar xzv hd && \
+        mv hd /usr/bin/hd && \
+        hd fetch --reset
 
 COPY entrypoint.sh /entrypoint.sh
 COPY --from=builder /workspace/yaml-readme /usr/bin/yaml-readme

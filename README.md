@@ -29,6 +29,12 @@ Flags:
 | `parentname` | The parent directory name. For example, `items/good.yaml`, the parent name is `items`. |
 | `fullpath` | The related file path of each items. |
 
+### Available functions
+
+| Name               | Usage |
+|--------------------|---|
+| `printHelp` | `{{printHelp 'hd'}}` |
+
 ### Ignore particular items
 
 In case you want to ignore some particular items, you can put a key `ignore` with value `true`. Let's see the following sample:
