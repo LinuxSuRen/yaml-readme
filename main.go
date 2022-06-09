@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"sort"
 	"strconv"
@@ -106,7 +107,18 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 
 	// generate readme file
 	var tpl *template.Template
-	if tpl, err = template.New("readme").Parse(readmeTpl); err != nil {
+	if tpl, err = template.New("readme").Funcs(template.FuncMap{
+		"printHelp": func(cmd string) (output string) {
+			var err error
+			var data []byte
+			if data, err = exec.Command(cmd, "--help").Output(); err != nil {
+				_, _ = fmt.Fprintln(os.Stderr, "failed to run command", cmd)
+			} else {
+				output = string(data)
+			}
+			return
+		},
+	}).Parse(readmeTpl); err != nil {
 		return
 	}
 

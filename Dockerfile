@@ -4,6 +4,7 @@ WORKDIR /workspace
 COPY . .
 RUN go mod download
 RUN CGO_ENABLE=0 go build -ldflags "-w -s" -o yaml-readme
+RUN curl -L https://github.com/LinuxSuRen/http-downloader/releases/download/v0.0.67/hd-linux-amd64.tar.gz | tar xzv hd
 
 FROM alpine:3.10
 
@@ -30,5 +31,6 @@ RUN apk add --no-cache \
 
 COPY entrypoint.sh /entrypoint.sh
 COPY --from=builder /workspace/yaml-readme /usr/bin/yaml-readme
+COPY --from=builder /workspace/hd /usr/bin/hd
 
 ENTRYPOINT ["/entrypoint.sh"]

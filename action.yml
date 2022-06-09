@@ -30,18 +30,22 @@ inputs:
     required: false
   push:
     description: 'Indicate if you want to push the changes automatically'
-    default: true
+    default: 'true'
     required: true
+  tool:
+    description: 'The tool name which you want to install'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.pattern }}
-    - ${{ inputs.username }}
-    - ${{ inputs.org }}
-    - ${{ inputs.repo }}
-    - ${{ inputs.sortby }}
-    - ${{ inputs.groupby }}
-    - ${{ inputs.output }}
-    - ${{ inputs.template }}
-    - ${{ inputs.push }}
+    - --pattern=${{ inputs.pattern }}
+    - --username=${{ inputs.username }}
+    - --org=${{ inputs.org }}
+    - --repo=${{ inputs.repo }}
+    - --sortby=${{ inputs.sortby }}
+    - --groupby=${{ inputs.groupby }}
+    - --output${{ inputs.output }}
+    - --template=${{ inputs.template }}
+    - --push=${{ inputs.push }}
+    - --tool=${{ inputs.tool }}
