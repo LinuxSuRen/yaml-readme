@@ -31,10 +31,11 @@ Flags:
 
 ### Available functions
 
-| Name               | Usage                | Description                            |
-|--------------------|----------------------|----------------------------------------|
-| `printHelp` | `{{printHelp 'hd'}}` | Print the help text of a command       |
+| Name               | Usage                | Description                                                             |
+|--------------------|----------------------|-------------------------------------------------------------------------|
+| `printHelp` | `{{printHelp 'hd'}}` | Print the help text of a command                                        |
 | `printToc` | `{{printToc}}`       | Print the [TOC](https://en.wikipedia.org/wiki/TOC) of the template file |
+| `printContributors` | `{{printContributors "linuxsuren" "yaml-readme"}}` | Print all the contributors of an repository                             |
 
 ### Ignore particular items
 

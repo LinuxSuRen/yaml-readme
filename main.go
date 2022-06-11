@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 	"html/template"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -123,6 +126,9 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 		"printToc": func() string {
 			return generateTOC(readmeTpl)
 		},
+		"printContributors": func(owner, repo string) string {
+			return printContributors(owner, repo)
+		},
 	}).Parse(readmeTpl); err != nil {
 		return
 	}
@@ -182,6 +188,56 @@ func generateTOC(txt string) (toc string) {
 	}
 	return
 }
+
+func printContributors(owner, repo string) (output string) {
+	api := fmt.Sprintf("https://api.github.com/repos/%s/%s/contributors", owner, repo)
+
+	var (
+		resp *http.Response
+		err  error
+	)
+
+	if resp, err = http.Get(api); err != nil || resp.StatusCode != http.StatusOK {
+		return
+	}
+
+	var data []byte
+	if data, err = ioutil.ReadAll(resp.Body); err != nil {
+		return
+	}
+
+	var contributors []map[string]interface{}
+	if err = json.Unmarshal(data, &contributors); err != nil {
+		return
+	}
+
+	var tpl *template.Template
+	if tpl, err = template.New("contributors").Parse(contributorsTpl); err != nil {
+		return
+	}
+
+	buf := bytes.NewBuffer([]byte{})
+	if err = tpl.Execute(buf, contributors); err != nil {
+		return
+	}
+	output = buf.String()
+	return
+}
+
+var contributorsTpl = `<table>
+{{- range $val := .}}
+	<tr>
+		<td align="center">
+			<a href="{{$val.html_url}}">
+				<img src="{{$val.avatar_url}}" width="100;" alt="{{$val.login}}"/>
+				<br />
+				<sub><b>{{$val.login}}</b></sub>
+			</a>
+		</td>
+	</tr>
+{{- end}}
+</table>
+`
 
 func main() {
 	opt := &option{}
