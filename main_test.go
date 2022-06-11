@@ -187,11 +187,9 @@ func Test_getFuncMap(t *testing.T) {
 	assert.NotNil(t, funcMap["printStarHistory"])
 	assert.NotNil(t, funcMap["printVisitorCount"])
 
-	var output string
-	for k := range funcMap {
-		output = output + k + "\n"
-	}
 	buf := bytes.NewBuffer([]byte{})
 	printFunctions(buf)
-	assert.Equal(t, output, buf.String())
+	for k := range funcMap {
+		assert.Contains(t, buf.String(), k)
+	}
 }
