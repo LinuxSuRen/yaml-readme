@@ -120,6 +120,9 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 			}
 			return
 		},
+		"printToc": func() string {
+			return generateTOC(readmeTpl)
+		},
 	}).Parse(readmeTpl); err != nil {
 		return
 	}
@@ -150,6 +153,34 @@ func sortBy(items []map[string]interface{}, sortBy string, descending bool) {
 		}
 		return
 	})
+}
+
+func generateTOC(txt string) (toc string) {
+	items := strings.Split(txt, "\n")
+	for i := range items {
+		item := items[i]
+
+		var prefix string
+		var tag string
+		if strings.HasPrefix(item, "## ") {
+			tag = strings.TrimPrefix(item, "## ")
+			prefix = "- "
+		} else if strings.HasPrefix(item, "### ") {
+			tag = strings.TrimPrefix(item, "### ")
+			prefix = " - "
+		} else {
+			continue
+		}
+
+		// not support those titles which have whitespaces
+		tag = strings.TrimSpace(tag)
+		if len(strings.Split(tag, " ")) > 1 {
+			continue
+		}
+
+		toc = toc + fmt.Sprintf("%s[%s](#%s)\n", prefix, tag, strings.ToLower(tag))
+	}
+	return
 }
 
 func main() {
