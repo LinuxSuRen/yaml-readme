@@ -211,7 +211,25 @@ func printContributors(owner, repo string) (output string) {
 		return
 	}
 
+	var text string
+	group := 6
+	for i := 0; i < len(contributors); {
+		next := i + group
+		if next > len(contributors) {
+			next = len(contributors)
+		}
+		text = text + "<tr>" + generateContributor(contributors[i:next]) + "</tr>"
+		i = next
+	}
+
+	output = fmt.Sprintf(`<table>%s</table>
+`, text)
+	return
+}
+
+func generateContributor(contributors []map[string]interface{}) (output string) {
 	var tpl *template.Template
+	var err error
 	if tpl, err = template.New("contributors").Parse(contributorsTpl); err != nil {
 		return
 	}
@@ -224,19 +242,15 @@ func printContributors(owner, repo string) (output string) {
 	return
 }
 
-var contributorsTpl = `<table>
-{{- range $val := .}}
-	<tr>
-		<td align="center">
-			<a href="{{$val.html_url}}">
-				<img src="{{$val.avatar_url}}" width="100;" alt="{{$val.login}}"/>
-				<br />
-				<sub><b>{{$val.login}}</b></sub>
-			</a>
-		</td>
-	</tr>
+var contributorsTpl = `{{- range $i, $val := .}}
+	<td align="center">
+		<a href="{{$val.html_url}}">
+			<img src="{{$val.avatar_url}}" width="100;" alt="{{$val.login}}"/>
+			<br />
+			<sub><b>{{$val.login}}</b></sub>
+		</a>
+	</td>
 {{- end}}
-</table>
 `
 
 func main() {
