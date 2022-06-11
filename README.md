@@ -31,9 +31,10 @@ Flags:
 
 ### Available functions
 
-| Name               | Usage |
-|--------------------|---|
-| `printHelp` | `{{printHelp 'hd'}}` |
+| Name               | Usage                | Description                            |
+|--------------------|----------------------|----------------------------------------|
+| `printHelp` | `{{printHelp 'hd'}}` | Print the help text of a command       |
+| `printToc` | `{{printToc}}`       | Print the [TOC](https://en.wikipedia.org/wiki/TOC) of the template file |
 
 ### Ignore particular items
 
