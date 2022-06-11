@@ -1,6 +1,11 @@
 package main
 
-import "testing"
+import (
+	"github.com/h2non/gock"
+	"io/ioutil"
+	"net/http"
+	"testing"
+)
 import "github.com/stretchr/testify/assert"
 
 func Test_sortBy(t *testing.T) {
@@ -109,6 +114,42 @@ content
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.wantToc, generateTOC(tt.args.txt), "generateTOC(%v)", tt.args.txt)
+		})
+	}
+}
+
+func Test_printContributor(t *testing.T) {
+	type args struct {
+		owner string
+		repo  string
+	}
+	tests := []struct {
+		name       string
+		args       args
+		prepare    func()
+		wantOutput func() string
+	}{{
+		name: "normal case",
+		args: args{
+			owner: "linuxsuren",
+			repo:  "yaml-readme",
+		},
+		prepare: func() {
+			gock.New("https://api.github.com").
+				Get("/repos/linuxsuren/yaml-readme/contributors").
+				Reply(http.StatusOK).
+				File("data/yaml-readme.json")
+		},
+		wantOutput: func() string {
+			data, _ := ioutil.ReadFile("data/yaml-readme-contributors.txt")
+			return string(data)
+		},
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer gock.Off()
+			tt.prepare()
+			assert.Equalf(t, tt.wantOutput(), printContributors(tt.args.owner, tt.args.repo), "printContributors(%v, %v)", tt.args.owner, tt.args.repo)
 		})
 	}
 }
