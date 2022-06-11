@@ -126,8 +126,8 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 		"printToc": func() string {
 			return generateTOC(readmeTpl)
 		},
-		"printContributors": func(owner, repo string) string {
-			return printContributors(owner, repo)
+		"printContributors": func(owner, repo string) template.HTML {
+			return template.HTML(printContributors(owner, repo))
 		},
 	}).Parse(readmeTpl); err != nil {
 		return
