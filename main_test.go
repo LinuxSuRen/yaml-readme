@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"github.com/h2non/gock"
 	"io/ioutil"
 	"net/http"
@@ -152,4 +153,45 @@ func Test_printContributor(t *testing.T) {
 			assert.Equalf(t, tt.wantOutput(), printContributors(tt.args.owner, tt.args.repo), "printContributors(%v, %v)", tt.args.owner, tt.args.repo)
 		})
 	}
+}
+
+func Test_printStarHistory(t *testing.T) {
+	type args struct {
+		owner string
+		repo  string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{{
+		name: "simple",
+		args: args{
+			owner: "linuxsuren",
+			repo:  "yaml-readme",
+		},
+		want: `[![Star History Chart](https://api.star-history.com/svg?repos=linuxsuren/yaml-readme&type=Date)](https://star-history.com/#linuxsuren/yaml-readme&Date)`,
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, printStarHistory(tt.args.owner, tt.args.repo), "printStarHistory(%v, %v)", tt.args.owner, tt.args.repo)
+		})
+	}
+}
+
+func Test_getFuncMap(t *testing.T) {
+	funcMap := getFuncMap("")
+	assert.NotNil(t, funcMap["printToc"])
+	assert.NotNil(t, funcMap["printHelp"])
+	assert.NotNil(t, funcMap["printContributors"])
+	assert.NotNil(t, funcMap["printStarHistory"])
+	assert.NotNil(t, funcMap["printVisitorCount"])
+
+	var output string
+	for k := range funcMap {
+		output = output + k + "\n"
+	}
+	buf := bytes.NewBuffer([]byte{})
+	printFunctions(buf)
+	assert.Equal(t, output, buf.String())
 }

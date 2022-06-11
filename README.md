@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/LinuxSuRen/yaml-readme/branch/master/graph/badge.svg?token=mnFyeD2IQ7)](https://codecov.io/gh/LinuxSuRen/yaml-readme)
+
 A helper to generate the READE file automatically.
 
 ## Get started
@@ -31,11 +33,13 @@ Flags:
 
 ### Available functions
 
-| Name               | Usage                | Description                                                             |
-|--------------------|----------------------|-------------------------------------------------------------------------|
-| `printHelp` | `{{printHelp 'hd'}}` | Print the help text of a command                                        |
-| `printToc` | `{{printToc}}`       | Print the [TOC](https://en.wikipedia.org/wiki/TOC) of the template file |
+| Name                | Usage                                              | Description                                                             |
+|---------------------|----------------------------------------------------|-------------------------------------------------------------------------|
+| `printHelp`         | `{{printHelp 'hd'}}`                               | Print the help text of a command                                        |
+| `printToc`          | `{{printToc}}`                                     | Print the [TOC](https://en.wikipedia.org/wiki/TOC) of the template file |
 | `printContributors` | `{{printContributors "linuxsuren" "yaml-readme"}}` | Print all the contributors of an repository                             |
+| `printStarHistory`  | `{{printStarHistory "linuxsuren" "yaml-readme"}}`  | Print the star history of an repository `                               |
+| `printVisitorCount` | `{{printVisitorCount "repo-id"}}`                  | Print the visitor count chart of an repository `                        |
 
 ### Ignore particular items
 

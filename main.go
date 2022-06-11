@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -23,9 +24,22 @@ type option struct {
 	includeHeader bool
 	sortBy        string
 	groupBy       string
+
+	printFunctions bool
+	printVariables bool
 }
 
 func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
+	if o.printFunctions {
+		printFunctions(cmd.OutOrStdout())
+		return
+	}
+
+	if o.printVariables {
+		printVariables(cmd.OutOrStdout())
+		return
+	}
+
 	var items []map[string]interface{}
 	groupData := make(map[string][]map[string]interface{})
 
@@ -110,7 +124,34 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 
 	// generate readme file
 	var tpl *template.Template
-	if tpl, err = template.New("readme").Funcs(template.FuncMap{
+	if tpl, err = template.New("readme").Funcs(getFuncMap(readmeTpl)).Parse(readmeTpl); err != nil {
+		return
+	}
+
+	// render it with grouped data
+	if o.groupBy != "" {
+		err = tpl.Execute(os.Stdout, groupData)
+	} else {
+		err = tpl.Execute(os.Stdout, items)
+	}
+	return
+}
+
+func printVariables(stdout io.Writer) {
+	_, _ = stdout.Write([]byte(`filename
+parentname
+fullpath`))
+}
+
+func printFunctions(stdout io.Writer) {
+	funcMap := getFuncMap("")
+	for k := range funcMap {
+		_, _ = stdout.Write([]byte(fmt.Sprintf("%s\n", k)))
+	}
+}
+
+func getFuncMap(readmeTpl string) template.FuncMap {
+	return template.FuncMap{
 		"printHelp": func(cmd string) (output string) {
 			var err error
 			var data []byte
@@ -129,17 +170,13 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 		"printContributors": func(owner, repo string) template.HTML {
 			return template.HTML(printContributors(owner, repo))
 		},
-	}).Parse(readmeTpl); err != nil {
-		return
+		"printStarHistory": func(owner, repo string) string {
+			return printStarHistory(owner, repo)
+		},
+		"printVisitorCount": func(id string) string {
+			return fmt.Sprintf(`![Visitor Count](https://profile-counter.glitch.me/%s/count.svg)`, id)
+		},
 	}
-
-	// render it with grouped data
-	if o.groupBy != "" {
-		err = tpl.Execute(os.Stdout, groupData)
-	} else {
-		err = tpl.Execute(os.Stdout, items)
-	}
-	return
 }
 
 func sortBy(items []map[string]interface{}, sortBy string, descending bool) {
@@ -242,6 +279,11 @@ func generateContributor(contributors []map[string]interface{}) (output string) 
 	return
 }
 
+func printStarHistory(owner, repo string) string {
+	return fmt.Sprintf(`[![Star History Chart](https://api.star-history.com/svg?repos=%[1]s/%[2]s&type=Date)](https://star-history.com/#%[1]s/%[2]s&Date)`,
+		owner, repo)
+}
+
 var contributorsTpl = `{{- range $i, $val := .}}
 	<td align="center">
 		<a href="{{$val.html_url}}">
@@ -271,6 +313,10 @@ func main() {
 		"Sort the array data descending by which field, or sort it ascending with the prefix '!'. For example: --sort-by !year")
 	flags.StringVarP(&opt.groupBy, "group-by", "", "",
 		"Group the array data by which field")
+	flags.BoolVarP(&opt.printFunctions, "print-functions", "", false,
+		"Print all the functions and exit")
+	flags.BoolVarP(&opt.printVariables, "print-variables", "", false,
+		"Print all the variables and exit")
 
 	err := cmd.Execute()
 	if err != nil {
