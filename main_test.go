@@ -71,3 +71,44 @@ func Test_sortBy(t *testing.T) {
 		})
 	}
 }
+
+func Test_generateTOC(t *testing.T) {
+	type args struct {
+		txt string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantToc string
+	}{{
+		name: "simple text",
+		args: args{
+			txt: `## Good`,
+		},
+		wantToc: `- [Good](#good)
+`,
+	}, {
+		name: "multiple levels of the titles",
+		args: args{
+			txt: `## Good
+content
+### Better`,
+		},
+		wantToc: `- [Good](#good)
+ - [Better](#better)
+`,
+	}, {
+		name: "has whitespace between title",
+		args: args{
+			txt: `## Good
+## This is good`,
+		},
+		wantToc: `- [Good](#good)
+`,
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.wantToc, generateTOC(tt.args.txt), "generateTOC(%v)", tt.args.txt)
+		})
+	}
+}
