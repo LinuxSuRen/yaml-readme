@@ -38,8 +38,9 @@ Flags:
 | `printHelp`         | `{{printHelp 'hd'}}`                               | Print the help text of a command                                        |
 | `printToc`          | `{{printToc}}`                                     | Print the [TOC](https://en.wikipedia.org/wiki/TOC) of the template file |
 | `printContributors` | `{{printContributors "linuxsuren" "yaml-readme"}}` | Print all the contributors of an repository                             |
-| `printStarHistory`  | `{{printStarHistory "linuxsuren" "yaml-readme"}}`  | Print the star history of an repository `                               |
-| `printVisitorCount` | `{{printVisitorCount "repo-id"}}`                  | Print the visitor count chart of an repository `                        |
+| `printStarHistory`  | `{{printStarHistory "linuxsuren" "yaml-readme"}}`  | Print the star history of an repository                                 |
+| `printVisitorCount` | `{{printVisitorCount "repo-id"}}`                  | Print the visitor count chart of an repository                          |
+| `render` | `{{render true}}`                  | Make the value be readable, turn `true` to `:white_check_mark:`                        |
 
 ### Ignore particular items
 

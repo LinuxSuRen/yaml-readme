@@ -176,6 +176,7 @@ func getFuncMap(readmeTpl string) template.FuncMap {
 		"printVisitorCount": func(id string) string {
 			return fmt.Sprintf(`![Visitor Count](https://profile-counter.glitch.me/%s/count.svg)`, id)
 		},
+		"render": dataRender,
 	}
 }
 
@@ -282,6 +283,20 @@ func generateContributor(contributors []map[string]interface{}) (output string) 
 func printStarHistory(owner, repo string) string {
 	return fmt.Sprintf(`[![Star History Chart](https://api.star-history.com/svg?repos=%[1]s/%[2]s&type=Date)](https://star-history.com/#%[1]s/%[2]s&Date)`,
 		owner, repo)
+}
+
+func dataRender(data interface{}) string {
+	switch val := data.(type) {
+	case bool:
+		if val {
+			return ":white_check_mark:"
+		} else {
+			return ":x:"
+		}
+	case string:
+		return val
+	}
+	return ""
 }
 
 var contributorsTpl = `{{- range $i, $val := .}}
