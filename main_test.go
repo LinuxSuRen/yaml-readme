@@ -193,3 +193,37 @@ func Test_getFuncMap(t *testing.T) {
 		assert.Contains(t, buf.String(), k)
 	}
 }
+
+func Test_dataRender(t *testing.T) {
+	type args struct {
+		data interface{}
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{{
+		name: "bool type with true value",
+		args: args{
+			data: true,
+		},
+		want: ":white_check_mark:",
+	}, {
+		name: "bool type with false value",
+		args: args{
+			data: false,
+		},
+		want: ":x:",
+	}, {
+		name: "normal string value fake",
+		args: args {
+			data:"fake",
+		},
+		want:"fake",
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, dataRender(tt.args.data), "dataRender(%v)", tt.args.data)
+		})
+	}
+}
