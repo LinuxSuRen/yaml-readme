@@ -25,11 +25,11 @@ Flags:
 
 ### Available variables:
 
-| Name | Usage |
-|---|---|
-| `filename` | The filename of a particular item file. For example, `items/good.yaml`, the filename is `good`. |
-| `parentname` | The parent directory name. For example, `items/good.yaml`, the parent name is `items`. |
-| `fullpath` | The related file path of each items. |
+| Name         | Usage                                                                                           |
+|--------------|-------------------------------------------------------------------------------------------------|
+| `filename`   | The filename of a particular item file. For example, `items/good.yaml`, the filename is `good`. |
+| `parentname` | The parent directory name. For example, `items/good.yaml`, the parent name is `items`.          |
+| `fullpath`   | The related file path of each items.                                                            |
 
 ### Available functions
 
@@ -40,7 +40,8 @@ Flags:
 | `printContributors` | `{{printContributors "linuxsuren" "yaml-readme"}}` | Print all the contributors of an repository                             |
 | `printStarHistory`  | `{{printStarHistory "linuxsuren" "yaml-readme"}}`  | Print the star history of an repository                                 |
 | `printVisitorCount` | `{{printVisitorCount "repo-id"}}`                  | Print the visitor count chart of an repository                          |
-| `render` | `{{render true}}`                  | Make the value be readable, turn `true` to `:white_check_mark:`                        |
+| `render`            | `{{render true}}`                                  | Make the value be readable, turn `true` to `:white_check_mark:`         |
+| `gh`                | `{{gh 'linuxsuren'}}`                              | Render a GitHub user to be a link                                       | 
 
 ### Ignore particular items
 
