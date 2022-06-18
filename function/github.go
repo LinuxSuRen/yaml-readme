@@ -7,6 +7,8 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"regexp"
+	"strings"
 )
 
 // PrintContributors from a GitHub repository
@@ -86,8 +88,38 @@ var contributorsTpl = `{{- range $i, $val := .}}
 {{- end}}
 `
 
+// GitHubUsersLink parses a text and try to make the potential GitHub IDs be links
+func GitHubUsersLink(ids, sep string) (links string) {
+	if sep == "" {
+		sep = " "
+	}
+
+	splits := strings.Split(ids, sep)
+	var items []string
+	for _, item := range splits {
+		items = append(items, GithubUserLink(strings.TrimSpace(item), false))
+	}
+
+	// having additional whitespace it's an ASCII character
+	if sep == "," {
+		sep = sep + " "
+	}
+	links = strings.Join(items, sep)
+	return
+}
+
 // GithubUserLink makes a GitHub user link
 func GithubUserLink(id string, bio bool) (link string) {
+	link = id
+	if strings.Contains(id, " ") { // only handle the valid GitHub ID
+		return
+	}
+
+	// return the original text if there are Markdown style link exist
+	if hasLink(id) {
+		return
+	}
+
 	api := fmt.Sprintf("https://api.github.com/users/%s", id)
 
 	var (
@@ -100,5 +132,12 @@ func GithubUserLink(id string, bio bool) (link string) {
 			link = fmt.Sprintf("%s (%s)", link, data["bio"])
 		}
 	}
+	return
+}
+
+// hasLink determines if there are Markdown style links
+func hasLink(text string) (ok bool) {
+	reg, _ := regexp.Compile(".*\\[.*\\]\\(.*\\)")
+	ok = reg.MatchString(text)
 	return
 }

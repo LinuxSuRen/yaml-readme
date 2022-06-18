@@ -176,6 +176,7 @@ func getFuncMap(readmeTpl string) template.FuncMap {
 		},
 		"render": dataRender,
 		"gh":     function.GithubUserLink,
+		"ghs":    function.GitHubUsersLink,
 	}
 }
 

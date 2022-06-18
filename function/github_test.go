@@ -1,6 +1,7 @@
 package function
 
 import (
+	"fmt"
 	"github.com/h2non/gock"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -67,13 +68,123 @@ func TestGithubUserLink(t *testing.T) {
 			bio: true,
 		},
 		want: `[Rick](https://github.com/LinuxSuRen) (程序员，业余开源布道者)`,
+	}, {
+		name: "with whitespace",
+		args: args{
+			id:  "this is not id",
+			bio: false,
+		},
+		want: "this is not id",
+	}, {
+		name: "has Markdown style link",
+		args: args{
+			id:  "[name](link)",
+			bio: false,
+		},
+		want: "[name](link)",
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gock.New("https://api.github.com").
-				Get("/users/linuxsuren").Reply(http.StatusOK).File("data/linuxsuren.json")
-
+			defer gock.Off()
+			mockGitHubUser("linuxsuren")
 			assert.Equalf(t, tt.want, GithubUserLink(tt.args.id, tt.args.bio), "GithubUserLink(%v, %v)", tt.args.id, tt.args.bio)
+		})
+	}
+}
+
+func mockGitHubUser(id string) {
+	gock.New("https://api.github.com").
+		Get(fmt.Sprintf("/users/%s", id)).Reply(http.StatusOK).File(fmt.Sprintf("data/%s.json", id))
+}
+
+func TestGitHubUsersLink(t *testing.T) {
+	type args struct {
+		ids string
+		sep string
+	}
+	tests := []struct {
+		name      string
+		prepare   func()
+		args      args
+		wantLinks string
+	}{{
+		name: "two GitHub users",
+		prepare: func() {
+			defer gock.Off()
+			mockGitHubUser("linuxsuren")
+		},
+		args: args{
+			ids: "linuxsuren linuxsuren",
+			sep: "",
+		},
+		wantLinks: "[Rick](https://github.com/LinuxSuRen) [Rick](https://github.com/LinuxSuRen)",
+	}, {
+		name: "two GitHub users with Chinese character as separate",
+		prepare: func() {
+			defer gock.Off()
+			mockGitHubUser("linuxsuren")
+		},
+		args: args{
+			ids: "linuxsuren、linuxsuren",
+			sep: "、",
+		},
+		wantLinks: "[Rick](https://github.com/LinuxSuRen)、[Rick](https://github.com/LinuxSuRen)",
+	}, {
+		name: "two GitHub users with whitespace and comma as separate",
+		prepare: func() {
+			defer gock.Off()
+			mockGitHubUser("linuxsuren")
+		},
+		args: args{
+			ids: "linuxsuren, linuxsuren",
+			sep: ",",
+		},
+		wantLinks: "[Rick](https://github.com/LinuxSuRen), [Rick](https://github.com/LinuxSuRen)",
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.prepare()
+			assert.Equalf(t, tt.wantLinks, GitHubUsersLink(tt.args.ids, tt.args.sep), "GitHubUsersLink(%v, %v)", tt.args.ids, tt.args.sep)
+		})
+	}
+}
+
+func Test_hasLink(t *testing.T) {
+	type args struct {
+		text string
+	}
+	tests := []struct {
+		name   string
+		args   args
+		wantOk bool
+	}{{
+		name: "normal text",
+		args: args{
+			text: "This is a normal text",
+		},
+		wantOk: false,
+	}, {
+		name: "has Markdown style link",
+		args: args{
+			text: "[here](link)",
+		},
+		wantOk: true,
+	}, {
+		name: "more complex Markdown style link",
+		args: args{
+			text: "Hi there, this is [my card](link).",
+		},
+		wantOk: true,
+	}, {
+		name: "multiple Markdown style link",
+		args: args{
+			text: "I have two links, [one](link) and [two](link).",
+		},
+		wantOk: true,
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.wantOk, hasLink(tt.args.text), "hasLink(%v)", tt.args.text)
 		})
 	}
 }
