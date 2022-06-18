@@ -110,7 +110,7 @@ func TestGitHubUsersLink(t *testing.T) {
 	}{{
 		name: "two GitHub users",
 		prepare: func() {
-			defer gock.Off()
+			mockGitHubUser("linuxsuren")
 			mockGitHubUser("linuxsuren")
 		},
 		args: args{
@@ -121,7 +121,7 @@ func TestGitHubUsersLink(t *testing.T) {
 	}, {
 		name: "two GitHub users with Chinese character as separate",
 		prepare: func() {
-			defer gock.Off()
+			mockGitHubUser("linuxsuren")
 			mockGitHubUser("linuxsuren")
 		},
 		args: args{
@@ -132,7 +132,7 @@ func TestGitHubUsersLink(t *testing.T) {
 	}, {
 		name: "two GitHub users with whitespace and comma as separate",
 		prepare: func() {
-			defer gock.Off()
+			mockGitHubUser("linuxsuren")
 			mockGitHubUser("linuxsuren")
 		},
 		args: args{
@@ -143,6 +143,7 @@ func TestGitHubUsersLink(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			defer gock.Off()
 			tt.prepare()
 			assert.Equalf(t, tt.wantLinks, GitHubUsersLink(tt.args.ids, tt.args.sep), "GitHubUsersLink(%v, %v)", tt.args.ids, tt.args.sep)
 		})

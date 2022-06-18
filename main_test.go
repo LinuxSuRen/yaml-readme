@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"fmt"
+	"reflect"
 	"testing"
 )
 import "github.com/stretchr/testify/assert"
@@ -150,8 +152,34 @@ func Test_getFuncMap(t *testing.T) {
 
 	buf := bytes.NewBuffer([]byte{})
 	printFunctions(buf)
-	for k := range funcMap {
+	for k, val := range funcMap {
 		assert.Contains(t, buf.String(), k)
+		assert.NotNil(t, val)
+
+		valType := reflect.TypeOf(val)
+		numOut := valType.NumOut()
+		assert.True(t, numOut > 0 && numOut < 3)
+
+		params := make([]reflect.Value, valType.NumIn())
+		for i := 0; i < valType.NumIn(); i++ {
+			switch valType.In(i).Kind() {
+			case reflect.Int:
+				params[i] = reflect.ValueOf(1)
+			case reflect.Bool:
+				params[i] = reflect.ValueOf(true)
+			case reflect.String:
+				fallthrough
+			default:
+				params[i] = reflect.ValueOf("")
+			}
+		}
+
+		reflect.ValueOf(val).Call(params)
+
+		assert.Equal(t, reflect.String, valType.Out(0).Kind())
+		if numOut == 2 {
+			assert.Equal(t, reflect.Interface, valType.Out(1).Kind())
+		}
 	}
 }
 
@@ -185,6 +213,46 @@ func Test_dataRender(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.want, dataRender(tt.args.data), "dataRender(%v)", tt.args.data)
+		})
+	}
+}
+
+func Test_renderTemplateToString(t *testing.T) {
+	type args struct {
+		tplContent string
+		object     interface{}
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantOutput string
+		wantErr    assert.ErrorAssertionFunc
+	}{{
+		name: "built-in function",
+		args: args{
+			tplContent: `{{render true}}`,
+		},
+		wantOutput: ":white_check_mark:",
+		wantErr: func(t assert.TestingT, err error, i ...interface{}) bool {
+			return false
+		},
+	}, {
+		name: "Sprig function",
+		args: args{
+			tplContent: `{{ "hello!" | upper | repeat 5 }}`,
+		},
+		wantOutput: "HELLO!HELLO!HELLO!HELLO!HELLO!",
+		wantErr: func(t assert.TestingT, err error, i ...interface{}) bool {
+			return false
+		},
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotOutput, err := renderTemplateToString(tt.args.tplContent, tt.args.object)
+			if !tt.wantErr(t, err, fmt.Sprintf("renderTemplateToString(%v, %v)", tt.args.tplContent, tt.args.object)) {
+				return
+			}
+			assert.Equalf(t, tt.wantOutput, gotOutput, "renderTemplateToString(%v, %v)", tt.args.tplContent, tt.args.object)
 		})
 	}
 }

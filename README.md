@@ -44,6 +44,9 @@ Flags:
 | `gh`                | `{{gh 'linuxsuren' true}}`                         | Render a GitHub user to be a link                                       | 
 | `ghs`               | `{{ghs 'linuxsuren, linuxsuren' ','}}`             | Render multiple GitHub users to be links                                |
 
+> Want to use more powerful functions? Please feel free to see also [Sprig](http://masterminds.github.io/sprig/).
+> You could use all functions from both built-in and Sprig.
+
 ### Ignore particular items
 
 In case you want to ignore some particular items, you can put a key `ignore` with value `true`. Let's see the following sample:

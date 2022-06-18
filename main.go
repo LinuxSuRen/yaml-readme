@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"github.com/Masterminds/sprig"
 	"github.com/linuxsuren/yaml-readme/function"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
+	"gopkg.in/yaml.v2"
 	"html/template"
 	"io"
 	"io/ioutil"
@@ -120,17 +122,29 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 	}
 	readmeTpl = readmeTpl + string(data)
 
-	// generate readme file
-	var tpl *template.Template
-	if tpl, err = template.New("readme").Funcs(getFuncMap(readmeTpl)).Parse(readmeTpl); err != nil {
-		return
-	}
-
 	// render it with grouped data
 	if o.groupBy != "" {
-		err = tpl.Execute(os.Stdout, groupData)
+		err = renderTemplate(readmeTpl, groupData, os.Stdout)
 	} else {
-		err = tpl.Execute(os.Stdout, items)
+		err = renderTemplate(readmeTpl, items, os.Stdout)
+	}
+	return
+}
+
+func renderTemplateToString(tplContent string, object interface{}) (output string, err error) {
+	buf := bytes.NewBuffer([]byte{})
+	if err = renderTemplate(tplContent, object, buf); err == nil {
+		output = buf.String()
+	}
+	return
+}
+
+func renderTemplate(tplContent string, object interface{}, writer io.Writer) (err error) {
+	var tpl *template.Template
+	if tpl, err = template.New("readme").
+		Funcs(getFuncMap(tplContent)).
+		Funcs(sprig.FuncMap()).Parse(tplContent); err == nil {
+		err = tpl.Execute(writer, object)
 	}
 	return
 }
