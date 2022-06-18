@@ -1,15 +1,13 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
+	"github.com/linuxsuren/yaml-readme/function"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
 	"html/template"
 	"io"
 	"io/ioutil"
-	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -168,7 +166,7 @@ func getFuncMap(readmeTpl string) template.FuncMap {
 			return generateTOC(readmeTpl)
 		},
 		"printContributors": func(owner, repo string) template.HTML {
-			return template.HTML(printContributors(owner, repo))
+			return template.HTML(function.PrintContributors(owner, repo))
 		},
 		"printStarHistory": func(owner, repo string) string {
 			return printStarHistory(owner, repo)
@@ -177,6 +175,8 @@ func getFuncMap(readmeTpl string) template.FuncMap {
 			return fmt.Sprintf(`![Visitor Count](https://profile-counter.glitch.me/%s/count.svg)`, id)
 		},
 		"render": dataRender,
+		"gh":     function.GithubUserLink,
+		"ghs":    function.GitHubUsersLink,
 	}
 }
 
@@ -227,59 +227,6 @@ func generateTOC(txt string) (toc string) {
 	return
 }
 
-func printContributors(owner, repo string) (output string) {
-	api := fmt.Sprintf("https://api.github.com/repos/%s/%s/contributors", owner, repo)
-
-	var (
-		resp *http.Response
-		err  error
-	)
-
-	if resp, err = http.Get(api); err != nil || resp.StatusCode != http.StatusOK {
-		return
-	}
-
-	var data []byte
-	if data, err = ioutil.ReadAll(resp.Body); err != nil {
-		return
-	}
-
-	var contributors []map[string]interface{}
-	if err = json.Unmarshal(data, &contributors); err != nil {
-		return
-	}
-
-	var text string
-	group := 6
-	for i := 0; i < len(contributors); {
-		next := i + group
-		if next > len(contributors) {
-			next = len(contributors)
-		}
-		text = text + "<tr>" + generateContributor(contributors[i:next]) + "</tr>"
-		i = next
-	}
-
-	output = fmt.Sprintf(`<table>%s</table>
-`, text)
-	return
-}
-
-func generateContributor(contributors []map[string]interface{}) (output string) {
-	var tpl *template.Template
-	var err error
-	if tpl, err = template.New("contributors").Parse(contributorsTpl); err != nil {
-		return
-	}
-
-	buf := bytes.NewBuffer([]byte{})
-	if err = tpl.Execute(buf, contributors); err != nil {
-		return
-	}
-	output = buf.String()
-	return
-}
-
 func printStarHistory(owner, repo string) string {
 	return fmt.Sprintf(`[![Star History Chart](https://api.star-history.com/svg?repos=%[1]s/%[2]s&type=Date)](https://star-history.com/#%[1]s/%[2]s&Date)`,
 		owner, repo)
@@ -298,17 +245,6 @@ func dataRender(data interface{}) string {
 	}
 	return ""
 }
-
-var contributorsTpl = `{{- range $i, $val := .}}
-	<td align="center">
-		<a href="{{$val.html_url}}">
-			<img src="{{$val.avatar_url}}" width="100;" alt="{{$val.login}}"/>
-			<br />
-			<sub><b>{{$val.login}}</b></sub>
-		</a>
-	</td>
-{{- end}}
-`
 
 func main() {
 	opt := &option{}
