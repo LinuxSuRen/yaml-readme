@@ -7,6 +7,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -41,9 +42,18 @@ func PrintContributors(owner, repo string) (output string) {
 func ghRequest(api string) (data []byte, err error) {
 	var (
 		resp *http.Response
+		req  *http.Request
 	)
 
-	if resp, err = http.Get(api); err == nil && resp.StatusCode == http.StatusOK {
+	if req, err = http.NewRequest(http.MethodGet, api, nil); err != nil {
+		return
+	}
+
+	if os.Getenv("GITHUB_TOKEN") != "" {
+		req.Header.Set("Authorization", fmt.Sprintf("token %s", os.Getenv("GITHUB_TOKEN")))
+	}
+
+	if resp, err = http.DefaultClient.Do(req); err == nil && resp.StatusCode == http.StatusOK {
 		data, err = ioutil.ReadAll(resp.Body)
 	}
 	return

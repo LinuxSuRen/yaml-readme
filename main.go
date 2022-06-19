@@ -120,7 +120,7 @@ func loadTemplate(templateFile string, includeHeader bool) (readmeTpl string, er
 }
 
 func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
-	logger = log.New(cmd.OutOrStdout(), "", log.LstdFlags)
+	logger = log.New(cmd.ErrOrStderr(), "", log.LstdFlags)
 	if o.printFunctions {
 		printFunctions(cmd.OutOrStdout())
 		return
@@ -298,7 +298,9 @@ func newRootCommand() (cmd *cobra.Command) {
 	cmd = &cobra.Command{
 		Use:   "yaml-readme",
 		Short: "A helper to generate a README file from Golang-based template",
-		RunE:  opt.runE,
+		Long: `A helper to generate a README file from Golang-based template
+Some functions rely on the GitHub API, in order to avoid X-RateLimit-Limit errors you can set an environment variable: 'GITHUB_TOKEN'`,
+		RunE: opt.runE,
 	}
 	cmd.SetOut(os.Stdout)
 	flags := cmd.Flags()
