@@ -327,6 +327,17 @@ Year: 2022
 |---|---|
 | zh | en |
 `,
+	}, {
+		name:     "group by a string",
+		flags:    []string{"--template", "function/data/README-group.tpl", "--pattern", "function/data/*.yaml", "--group-by", "zh", "--include-header=false"},
+		hasError: false,
+		expectOutput: `
+Year: zh
+| Zh | En |
+|---|---|
+| zh | en |
+| zh | en |
+`,
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
