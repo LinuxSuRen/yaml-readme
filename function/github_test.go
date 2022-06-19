@@ -1,11 +1,13 @@
 package function
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/h2non/gock"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"testing"
 )
 
@@ -186,6 +188,45 @@ func Test_hasLink(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.wantOk, hasLink(tt.args.text), "hasLink(%v)", tt.args.text)
+		})
+	}
+}
+
+func Test_ghRequest(t *testing.T) {
+	type args struct {
+		api string
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantData []byte
+		wantErr  assert.ErrorAssertionFunc
+	}{{
+		name: "with token",
+		args: args{
+			api: "https://fake.com",
+		},
+		wantData: []byte("body"),
+		wantErr: func(t assert.TestingT, err error, i ...interface{}) bool {
+			assert.Nil(t, err)
+			return true
+		},
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			oldToken := os.Getenv("GITHUB_TOKEN")
+			_ = os.Setenv("GITHUB_TOKEN", "fake")
+			defer func() {
+				_ = os.Setenv("GITHUB_TOKEN", oldToken)
+			}()
+
+			gock.New(tt.args.api).Get("/").Reply(http.StatusOK).Body(bytes.NewBufferString("body"))
+
+			gotData, err := ghRequest(tt.args.api)
+			if !tt.wantErr(t, err, fmt.Sprintf("ghRequest(%v)", tt.args.api)) {
+				return
+			}
+			assert.Equalf(t, tt.wantData, gotData, "ghRequest(%v)", tt.args.api)
 		})
 	}
 }

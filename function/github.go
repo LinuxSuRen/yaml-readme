@@ -45,16 +45,14 @@ func ghRequest(api string) (data []byte, err error) {
 		req  *http.Request
 	)
 
-	if req, err = http.NewRequest(http.MethodGet, api, nil); err != nil {
-		return
-	}
+	if req, err = http.NewRequest(http.MethodGet, api, nil); err == nil {
+		if os.Getenv("GITHUB_TOKEN") != "" {
+			req.Header.Set("Authorization", fmt.Sprintf("token %s", os.Getenv("GITHUB_TOKEN")))
+		}
 
-	if os.Getenv("GITHUB_TOKEN") != "" {
-		req.Header.Set("Authorization", fmt.Sprintf("token %s", os.Getenv("GITHUB_TOKEN")))
-	}
-
-	if resp, err = http.DefaultClient.Do(req); err == nil && resp.StatusCode == http.StatusOK {
-		data, err = ioutil.ReadAll(resp.Body)
+		if resp, err = http.DefaultClient.Do(req); err == nil && resp.StatusCode == http.StatusOK {
+			data, err = ioutil.ReadAll(resp.Body)
+		}
 	}
 	return
 }
