@@ -228,6 +228,8 @@ func getFuncMap(readmeTpl string) template.FuncMap {
 		"link":        function.Link,
 		"linkOrEmpty": function.LinkOrEmpty,
 		"twitterLink": function.TwitterLink,
+		"youTubeLink": function.YouTubeLink,
+		"gstatic":     function.GStatic,
 	}
 }
 

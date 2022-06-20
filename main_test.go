@@ -293,6 +293,7 @@ fullpath`,
 		expectOutput: `gh
 ghEmoji
 ghs
+gstatic
 link
 linkOrEmpty
 printContributors
@@ -301,7 +302,8 @@ printStarHistory
 printToc
 printVisitorCount
 render
-twitterLink`,
+twitterLink
+youTubeLink`,
 	}, {
 		name:     "normal case",
 		flags:    []string{"--template", "function/data/README.tpl", "--pattern", "function/data/*.yaml", "--sort-by", "zh"},

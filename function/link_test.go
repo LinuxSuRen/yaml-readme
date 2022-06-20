@@ -87,3 +87,27 @@ func TestTwitterLink(t *testing.T) {
 		})
 	}
 }
+
+func TestYouTubeLink(t *testing.T) {
+	type args struct {
+		id string
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantOutput string
+	}{{
+		name: "empty",
+	}, {
+		name: "not empty",
+		args: args{
+			id: "channel/UC63xz3pq26BBgwB3cnwCoqQ",
+		},
+		wantOutput: "[![youtube](https://encrypted-tbn3.gstatic.com/favicon-tbn?q=tbn:ANd9GcRY4no9kYJtEAHXBEY2GDprV__HH1zc94olyS6G6fT5isS71bPyqvIi7-9VE1MMy3_3vsNOQLAerwcSQqGNyADWfxKpd2hLc8HuacZdgEjgZc_WLN8)](https://www.youtube.com/channel/UC63xz3pq26BBgwB3cnwCoqQ)",
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.wantOutput, YouTubeLink(tt.args.id), "YouTubeLink(%v)", tt.args.id)
+		})
+	}
+}
