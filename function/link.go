@@ -18,3 +18,11 @@ func Link(text, link string) (output string) {
 	}
 	return
 }
+
+// TwitterLink returns a Markdown style link of Twitter
+func TwitterLink(user string) (output string) {
+	if user != "" {
+		output = fmt.Sprintf("[![twitter](https://encrypted-tbn3.gstatic.com/favicon-tbn?q=tbn:ANd9GcTA3XDrUCnqJvmP3gfZKpXtV8ZO23EalnKszft6-V73d8G2Lt54v9TEnnkeO_MXseXmT5ERutOo0yPqoODJkFPtvxCeQbg_PYDJjXDAFfIMzM2p4bI)](https://twitter.com/%s)", user)
+	}
+	return
+}

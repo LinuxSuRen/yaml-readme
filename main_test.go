@@ -300,7 +300,8 @@ printHelp
 printStarHistory
 printToc
 printVisitorCount
-render`,
+render
+twitterLink`,
 	}, {
 		name:     "normal case",
 		flags:    []string{"--template", "function/data/README.tpl", "--pattern", "function/data/*.yaml", "--sort-by", "zh"},

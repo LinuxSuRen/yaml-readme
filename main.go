@@ -227,6 +227,7 @@ func getFuncMap(readmeTpl string) template.FuncMap {
 		"ghEmoji":     function.GitHubEmojiLink,
 		"link":        function.Link,
 		"linkOrEmpty": function.LinkOrEmpty,
+		"twitterLink": function.TwitterLink,
 	}
 }
 

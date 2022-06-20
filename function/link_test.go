@@ -63,3 +63,27 @@ func TestLinkOrEmpty(t *testing.T) {
 		})
 	}
 }
+
+func TestTwitterLink(t *testing.T) {
+	type args struct {
+		user string
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantOutput string
+	}{{
+		name: "user is empty",
+	}, {
+		name: "user is not empty",
+		args: args{
+			user: "linuxsuren",
+		},
+		wantOutput: "[![twitter](https://encrypted-tbn3.gstatic.com/favicon-tbn?q=tbn:ANd9GcTA3XDrUCnqJvmP3gfZKpXtV8ZO23EalnKszft6-V73d8G2Lt54v9TEnnkeO_MXseXmT5ERutOo0yPqoODJkFPtvxCeQbg_PYDJjXDAFfIMzM2p4bI)](https://twitter.com/linuxsuren)",
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.wantOutput, TwitterLink(tt.args.user), "TwitterLink(%v)", tt.args.user)
+		})
+	}
+}
