@@ -230,3 +230,28 @@ func Test_ghRequest(t *testing.T) {
 		})
 	}
 }
+
+func TestGitHubEmojiLink(t *testing.T) {
+	type args struct {
+		user string
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantOutput string
+	}{{
+		name:       "user is empty",
+		wantOutput: "",
+	}, {
+		name: "user is not empty",
+		args: args{
+			user: "linuxsuren",
+		},
+		wantOutput: "[:octocat:](https://github.com/linuxsuren)",
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.wantOutput, GitHubEmojiLink(tt.args.user), "GitHubEmojiLink(%v)", tt.args.user)
+		})
+	}
+}

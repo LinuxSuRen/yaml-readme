@@ -143,6 +143,14 @@ func GithubUserLink(id string, bio bool) (link string) {
 	return
 }
 
+// GitHubEmojiLink returns a Markdown style link or empty
+func GitHubEmojiLink(user string) (output string) {
+	if user != "" {
+		output = Link(":octocat:", fmt.Sprintf("https://github.com/%s", user))
+	}
+	return
+}
+
 // hasLink determines if there are Markdown style links
 func hasLink(text string) (ok bool) {
 	reg, _ := regexp.Compile(".*\\[.*\\]\\(.*\\)")

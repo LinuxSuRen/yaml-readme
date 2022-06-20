@@ -291,13 +291,17 @@ fullpath`,
 		flags:    []string{"--print-functions"},
 		hasError: false,
 		expectOutput: `gh
+ghEmoji
 ghs
+link
+linkOrEmpty
 printContributors
 printHelp
 printStarHistory
 printToc
 printVisitorCount
-render`,
+render
+twitterLink`,
 	}, {
 		name:     "normal case",
 		flags:    []string{"--template", "function/data/README.tpl", "--pattern", "function/data/*.yaml", "--sort-by", "zh"},
