@@ -41,8 +41,11 @@ Flags:
 | `printStarHistory`  | `{{printStarHistory "linuxsuren" "yaml-readme"}}`  | Print the star history of an repository                                 |
 | `printVisitorCount` | `{{printVisitorCount "repo-id"}}`                  | Print the visitor count chart of an repository                          |
 | `render`            | `{{render true}}`                                  | Make the value be readable, turn `true` to `:white_check_mark:`         |
-| `gh`                | `{{gh 'linuxsuren' true}}`                         | Render a GitHub user to be a link                                       | 
-| `ghs`               | `{{ghs 'linuxsuren, linuxsuren' ','}}`             | Render multiple GitHub users to be links                                |
+| `gh`                | `{{gh "linuxsuren" true}}`                         | Render a GitHub user to be a link                                       | 
+| `ghs`               | `{{ghs "linuxsuren, linuxsuren" ","}}`             | Render multiple GitHub users to be links                                |
+| `link`              | `{{link "text" "link"}}`                           | Print a Markdown style link                                             |
+| `linkOrEmpty`       | `{{linkOrEmpty "text" "link"}}`                    | Print a Markdown style link or empty if text is none                    |
+| `ghEmoji`           | `{{ghEmoji "linuxsuren"}}`                         | Print a Markdown style link with Emoji                                  |
 
 > Want to use more powerful functions? Please feel free to see also [Sprig](http://masterminds.github.io/sprig/).
 > You could use all functions from both built-in and Sprig.

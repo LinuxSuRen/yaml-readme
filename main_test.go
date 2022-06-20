@@ -291,7 +291,10 @@ fullpath`,
 		flags:    []string{"--print-functions"},
 		hasError: false,
 		expectOutput: `gh
+ghEmoji
 ghs
+link
+linkOrEmpty
 printContributors
 printHelp
 printStarHistory
