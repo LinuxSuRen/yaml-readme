@@ -4,3 +4,4 @@ bin/
 .idea/
 .vscode/
 coverage.out
+plugins/vscode/yaml-readme/node_modules/
