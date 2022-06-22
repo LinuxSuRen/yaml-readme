@@ -3,6 +3,7 @@
 	"displayName": "yaml-readme",
 	"description": "A helper to generate the READE file automatically.",
 	"version": "0.0.1",
+	"repository": "https://github.com/linuxsuren/yaml-readme",
 	"engines": {
 		"vscode": "^1.68.0"
 	},
