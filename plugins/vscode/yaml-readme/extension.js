@@ -25,35 +25,14 @@ function activate(context) {
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('yaml-readme.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
-
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from yaml-readme!');
-
-		cp.exec('pwd', (err, stdout, stderr) => {
-			console.log('stdout: ' + stdout);
-			console.log('stderr: ' + stderr);
-			if (err) {
-				console.log('error: ' + err);
-			}
-		});
-
 		if(vscode.workspace.workspaceFolders !== undefined) {
 			let wf = vscode.workspace.workspaceFolders[0].uri.path ;
-			let f = vscode.workspace.workspaceFolders[0].uri.fsPath ; 
-		
-			// let message = `YOUR-EXTENSION: folder: ${wf} - ${f}` ;
-		
-			// vscode.window.showInformationMessage(message);
 
 			let filename = vscode.window.activeTextEditor.document.fileName
-			console.log(filename)
-			vscode.window.showInformationMessage(filename);
 			let metadata = getFirstLine(filename)
 			vscode.window.showInformationMessage(metadata + "===" + metadata.startsWith("#!yaml-readme"));
 			if (metadata.startsWith("#!yaml-readme")) {
 				metadata = metadata.replace("#!yaml-readme ", "")
-				vscode.window.showInformationMessage(metadata);
 
 				let pattern = ""
 				let output = ""
@@ -68,9 +47,7 @@ function activate(context) {
 				}
 
 				vscode.window.showInformationMessage(`yaml-readme -p "${pattern}" -t "${filename}" > ${output}`)
-				cp.exec(`yaml-readme -p "${pattern}" -t "${filename}" > ${output}`, (err, stdout, stderr) => {
-					console.log('stdout: ' + stdout);
-					console.log('stderr: ' + stderr);
+				cp.exec(`yaml-readme -p "${pattern}" -t "${filename}" > ${output}`, (err) => {
 					if (err) {
 						console.log('error: ' + err);
 					}
@@ -82,46 +59,9 @@ function activate(context) {
 		
 			vscode.window.showErrorMessage(message);
 		}
-
-		// initMarkdownPreview(context);
 	});
 
 	context.subscriptions.push(disposable);
-}
-
-async function initMarkdownPreview(context) {
-    const panel = vscode.window.createWebviewPanel(
-        // Webview id
-        'liveHTMLPreviewer',
-        // Webview title
-        '[Preview]',
-        // This will open the second column for preview inside editor
-        2,
-        {
-            // Enable scripts in the webview
-            enableScripts: true,
-            retainContextWhenHidden: true,
-        }
-    );
-
-	
-	let wf = vscode.workspace.workspaceFolders[0].uri.path ;
-	let f = vscode.workspace.workspaceFolders[0].uri.fsPath ; 
-
-	let message = `YOUR-EXTENSION: folder: ${wf} - ${f}` ;
-
-	vscode.window.showInformationMessage(message);
-
-	cp.exec(`yaml-readme -p "${wf}/what/items/job-*.yaml" -t "${wf}/what/jobs.tpl"`, (err, stdout, stderr) => {
-		console.log('stdout: ' + stdout);
-		console.log('stderr: ' + stderr);
-		panel.webview.html = stdout
-		if (err) {
-			console.log('error: ' + err);
-		}
-
-		vscode.commands.executeCommand("markdown.showPreview", stdout);
-	});
 }
 
 // this method is called when your extension is deactivated
