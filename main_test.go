@@ -469,6 +469,19 @@ func Test_loadTemplate(t *testing.T) {
 			assert.Nil(t, err)
 			return true
 		},
+	}, {
+		name: "has metadata",
+		args: args{
+			templateFile:  "function/data/README-with-metadata.tpl",
+			includeHeader: false,
+		},
+		wantReadmeTpl: func() string {
+			return `a fake template`
+		},
+		wantErr: func(t assert.TestingT, err error, i ...interface{}) bool {
+			assert.Nil(t, err)
+			return true
+		},
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
