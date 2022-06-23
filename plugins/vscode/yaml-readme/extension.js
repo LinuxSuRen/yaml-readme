@@ -2,6 +2,12 @@
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
 const cp = require('child_process');
+const fs = require('fs');
+
+function getFirstLine(filePath) {
+	const data = fs.readFileSync(filePath);
+  return data.toString().split('\n')[0];
+}
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -36,18 +42,40 @@ function activate(context) {
 			let wf = vscode.workspace.workspaceFolders[0].uri.path ;
 			let f = vscode.workspace.workspaceFolders[0].uri.fsPath ; 
 		
-			let message = `YOUR-EXTENSION: folder: ${wf} - ${f}` ;
+			// let message = `YOUR-EXTENSION: folder: ${wf} - ${f}` ;
 		
-			vscode.window.showInformationMessage(message);
+			// vscode.window.showInformationMessage(message);
 
-			cp.exec(`yaml-readme -p "${wf}/what/items/job-*.yaml" -t "${wf}/what/jobs.tpl" > ${wf}/what/jobs.md`, (err, stdout, stderr) => {
-				console.log('stdout: ' + stdout);
-				console.log('stderr: ' + stderr);
-				if (err) {
-					console.log('error: ' + err);
+			let filename = vscode.window.activeTextEditor.document.fileName
+			console.log(filename)
+			vscode.window.showInformationMessage(filename);
+			let metadata = getFirstLine(filename)
+			vscode.window.showInformationMessage(metadata + "===" + metadata.startsWith("#!yaml-readme"));
+			if (metadata.startsWith("#!yaml-readme")) {
+				metadata = metadata.replace("#!yaml-readme ", "")
+				vscode.window.showInformationMessage(metadata);
+
+				let pattern = ""
+				let output = ""
+				const items = metadata.split(" ")
+				for (var i = 0; i < items.length; i++) {
+					const item = items[i]
+					if (item == "-p") {
+						pattern = wf + "/" + items[++i]
+					} else if (item == "--output") {
+						output = wf + "/" + items[++i]
+					}
 				}
-				vscode.commands.executeCommand("markdown.showPreviewToSide", vscode.Uri.file(`${wf}/what/jobs.md`));
-			});
+
+				cp.exec(`yaml-readme -p "${pattern}" -t "${filename}" > ${output}`, (err, stdout, stderr) => {
+					console.log('stdout: ' + stdout);
+					console.log('stderr: ' + stderr);
+					if (err) {
+						console.log('error: ' + err);
+					}
+					vscode.commands.executeCommand("markdown.showPreviewToSide", vscode.Uri.file(`${wf}/what/jobs.md`));
+				});
+			}
 		}  else {
 			let message = "YOUR-EXTENSION: Working folder not found, open a folder an try again" ;
 		
