@@ -67,13 +67,14 @@ function activate(context) {
 					}
 				}
 
+				vscode.window.showInformationMessage(`yaml-readme -p "${pattern}" -t "${filename}" > ${output}`)
 				cp.exec(`yaml-readme -p "${pattern}" -t "${filename}" > ${output}`, (err, stdout, stderr) => {
 					console.log('stdout: ' + stdout);
 					console.log('stderr: ' + stderr);
 					if (err) {
 						console.log('error: ' + err);
 					}
-					vscode.commands.executeCommand("markdown.showPreviewToSide", vscode.Uri.file(`${wf}/what/jobs.md`));
+					vscode.commands.executeCommand("markdown.showPreviewToSide", vscode.Uri.file(`${output}`));
 				});
 			}
 		}  else {
