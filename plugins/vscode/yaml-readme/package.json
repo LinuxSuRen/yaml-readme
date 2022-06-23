@@ -10,6 +10,7 @@
 	"categories": [
 		"Other"
 	],
+	"publisher": "linuxsuren",
 	"activationEvents": [
 		"onCommand:yaml-readme.helloWorld"
 	],
