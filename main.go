@@ -14,6 +14,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -116,6 +117,8 @@ func loadTemplate(templateFile string, includeHeader bool) (readmeTpl string, er
 			filepath.Base(templateFile), filepath.Base(templateFile))
 	}
 	readmeTpl = readmeTpl + string(data)
+	s, err := regexp.Compile("#!yaml-readme .*\n")
+	readmeTpl = s.ReplaceAllString(readmeTpl, "")
 	return
 }
 

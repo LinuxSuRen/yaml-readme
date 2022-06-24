@@ -1,4 +1,5 @@
 [![codecov](https://codecov.io/gh/LinuxSuRen/yaml-readme/branch/master/graph/badge.svg?token=mnFyeD2IQ7)](https://codecov.io/gh/LinuxSuRen/yaml-readme)
+[![vscode](https://vsmarketplacebadge.apphb.com/version/linuxsuren.yaml-readme.svg)](https://marketplace.visualstudio.com/items?itemName=linuxsuren.yaml-readme)
 
 A helper to generate the READE file automatically.
 
