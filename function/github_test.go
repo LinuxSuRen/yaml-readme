@@ -53,49 +53,63 @@ func TestGithubUserLink(t *testing.T) {
 		bio bool
 	}
 	tests := []struct {
-		name string
-		args args
-		want string
+		name     string
+		mockUser string
+		args     args
+		want     string
 	}{{
-		name: "normal case without bio",
+		name:     "normal case without bio",
+		mockUser: "linuxsuren",
 		args: args{
 			id:  "linuxsuren",
 			bio: false,
 		},
 		want: `[Rick](https://github.com/LinuxSuRen)`,
 	}, {
-		name: "normal case with bio",
+		name:     "normal case with bio",
+		mockUser: "linuxsuren",
 		args: args{
 			id:  "linuxsuren",
 			bio: true,
 		},
 		want: `[Rick](https://github.com/LinuxSuRen) (程序员，业余开源布道者)`,
 	}, {
-		name: "with whitespace",
+		name:     "with whitespace",
+		mockUser: "linuxsuren",
 		args: args{
 			id:  "this is not id",
 			bio: false,
 		},
 		want: "this is not id",
 	}, {
-		name: "has Markdown style link",
+		name:     "has Markdown style link",
+		mockUser: "linuxsuren",
 		args: args{
 			id:  "[name](link)",
 			bio: false,
 		},
 		want: "[name](link)",
 	}, {
-		name: "has Markdown style link, want bio",
+		name:     "has Markdown style link, want bio",
+		mockUser: "linuxsuren",
 		args: args{
 			id:  "[Rick](https://github.com/linuxsuren)",
 			bio: true,
 		},
 		want: `[Rick](https://github.com/LinuxSuRen) (程序员，业余开源布道者)`,
+	}, {
+		name:     "do not have bio",
+		mockUser: "linuxsuren-bot",
+		args: args{
+			id:  "linuxsuren-bot",
+			bio: true,
+		},
+		want: `[LinuxSuRen-bot](https://github.com/linuxsuren-bot)`,
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			defer gock.Off()
-			mockGitHubUser("linuxsuren")
+			mockGitHubUser(tt.mockUser)
 			assert.Equalf(t, tt.want, GithubUserLink(tt.args.id, tt.args.bio), "GithubUserLink(%v, %v)", tt.args.id, tt.args.bio)
 		})
 	}

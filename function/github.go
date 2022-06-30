@@ -139,8 +139,8 @@ func GithubUserLink(id string, bio bool) (link string) {
 	)
 	if data, err = ghRequestAsMap(api); err == nil {
 		link = fmt.Sprintf("[%s](%s)", data["name"], data["html_url"])
-		if bio {
-			link = fmt.Sprintf("%s (%s)", link, data["bio"])
+		if bioText, ok := data["bio"]; ok && bio && bioText != nil {
+			link = fmt.Sprintf("%s (%s)", link, bioText)
 		}
 	}
 	return
