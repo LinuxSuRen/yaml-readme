@@ -84,6 +84,13 @@ func TestGithubUserLink(t *testing.T) {
 			bio: false,
 		},
 		want: "[name](link)",
+	}, {
+		name: "has Markdown style link, want bio",
+		args: args{
+			id:  "[Rick](https://github.com/linuxsuren)",
+			bio: true,
+		},
+		want: `[Rick](https://github.com/LinuxSuRen) (程序员，业余开源布道者)`,
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -252,6 +259,28 @@ func TestGitHubEmojiLink(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.wantOutput, GitHubEmojiLink(tt.args.user), "GitHubEmojiLink(%v)", tt.args.user)
+		})
+	}
+}
+
+func Test_getIDFromGHLink(t *testing.T) {
+	type args struct {
+		link string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{{
+		name: "normal",
+		args: args{
+			link: "[Rick](https://github.com/LinuxSuRen)",
+		},
+		want: "LinuxSuRen",
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, getIDFromGHLink(tt.args.link), "getIDFromGHLink(%v)", tt.args.link)
 		})
 	}
 }
