@@ -233,6 +233,7 @@ func getFuncMap(readmeTpl string) template.FuncMap {
 		"twitterLink": function.TwitterLink,
 		"youTubeLink": function.YouTubeLink,
 		"gstatic":     function.GStatic,
+		"ghID":        function.GetIDFromGHLink,
 	}
 }
 

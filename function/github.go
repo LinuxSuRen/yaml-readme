@@ -126,7 +126,7 @@ func GithubUserLink(id string, bio bool) (link string) {
 	// return the original text if there are Markdown style link exist
 	if hasLink(id) {
 		if bio {
-			return GithubUserLink(getIDFromGHLink(id), bio)
+			return GithubUserLink(GetIDFromGHLink(id), bio)
 		}
 		return
 	}
@@ -154,7 +154,8 @@ func GitHubEmojiLink(user string) (output string) {
 	return
 }
 
-func getIDFromGHLink(link string) string {
+// GetIDFromGHLink return the GitHub ID from a link
+func GetIDFromGHLink(link string) string {
 	reg, _ := regexp.Compile("\\[.*\\]\\(.*/|\\)")
 	return reg.ReplaceAllString(link, "")
 }

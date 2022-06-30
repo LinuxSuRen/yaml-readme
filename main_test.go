@@ -292,6 +292,7 @@ fullpath`,
 		hasError: false,
 		expectOutput: `gh
 ghEmoji
+ghID
 ghs
 gstatic
 link

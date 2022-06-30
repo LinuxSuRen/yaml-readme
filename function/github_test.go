@@ -280,7 +280,7 @@ func Test_getIDFromGHLink(t *testing.T) {
 	}}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, getIDFromGHLink(tt.args.link), "getIDFromGHLink(%v)", tt.args.link)
+			assert.Equalf(t, tt.want, GetIDFromGHLink(tt.args.link), "GetIDFromGHLink(%v)", tt.args.link)
 		})
 	}
 }
