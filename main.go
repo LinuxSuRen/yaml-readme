@@ -6,6 +6,7 @@ import (
 	"github.com/Masterminds/sprig"
 	"github.com/linuxsuren/yaml-readme/function"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"gopkg.in/yaml.v2"
 	"html/template"
 	"io"
@@ -117,8 +118,36 @@ func loadTemplate(templateFile string, includeHeader bool) (readmeTpl string, er
 			filepath.Base(templateFile), filepath.Base(templateFile))
 	}
 	readmeTpl = readmeTpl + string(data)
-	s, err := regexp.Compile("#!yaml-readme .*\n")
+	s, err := getMetadataLine()
 	readmeTpl = s.ReplaceAllString(readmeTpl, "")
+	return
+}
+
+func getMetadataLine() (*regexp.Regexp, error) {
+	return regexp.Compile("#!yaml-readme .*\n")
+}
+
+func (o *option) preRunE(cmd *cobra.Command, args []string) (err error) {
+	if o.templateFile == "" {
+		return
+	}
+
+	// parse flags from metadata line
+	var data []byte
+	if data, err = ioutil.ReadFile(o.templateFile); err != nil {
+		err = nil // ignore this error
+		return
+	}
+
+	s, err := getMetadataLine()
+	flagLine := s.FindString(string(data))
+
+	opt := &option{}
+	flags := pflag.NewFlagSet("", pflag.ContinueOnError)
+	flags.StringVarP(&opt.pattern, "pattern", "p", "", "")
+	flags.ParseAll(strings.Split(flagLine, " "), func(flag *pflag.Flag, value string) error {
+		return nil
+	})
 	return
 }
 
@@ -310,7 +339,8 @@ func newRootCommand() (cmd *cobra.Command) {
 		Short: "A helper to generate a README file from Golang-based template",
 		Long: `A helper to generate a README file from Golang-based template
 Some functions rely on the GitHub API, in order to avoid X-RateLimit-Limit errors you can set an environment variable: 'GITHUB_TOKEN'`,
-		RunE: opt.runE,
+		PreRunE: opt.preRunE,
+		RunE:    opt.runE,
 	}
 	cmd.SetOut(os.Stdout)
 	flags := cmd.Flags()
