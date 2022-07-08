@@ -224,16 +224,17 @@ func getFuncMap(readmeTpl string) template.FuncMap {
 		"printVisitorCount": func(id string) string {
 			return fmt.Sprintf(`![Visitor Count](https://profile-counter.glitch.me/%s/count.svg)`, id)
 		},
-		"render":      dataRender,
-		"gh":          function.GithubUserLink,
-		"ghs":         function.GitHubUsersLink,
-		"ghEmoji":     function.GitHubEmojiLink,
-		"link":        function.Link,
-		"linkOrEmpty": function.LinkOrEmpty,
-		"twitterLink": function.TwitterLink,
-		"youTubeLink": function.YouTubeLink,
-		"gstatic":     function.GStatic,
-		"ghID":        function.GetIDFromGHLink,
+		"render":       dataRender,
+		"gh":           function.GithubUserLink,
+		"ghs":          function.GitHubUsersLink,
+		"ghEmoji":      function.GitHubEmojiLink,
+		"link":         function.Link,
+		"linkOrEmpty":  function.LinkOrEmpty,
+		"twitterLink":  function.TwitterLink,
+		"youTubeLink":  function.YouTubeLink,
+		"gstatic":      function.GStatic,
+		"ghID":         function.GetIDFromGHLink,
+		"printGHTable": function.PrintUserAsTable,
 	}
 }
 

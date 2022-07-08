@@ -298,3 +298,35 @@ func Test_getIDFromGHLink(t *testing.T) {
 		})
 	}
 }
+
+func TestPrintUserAsTable(t *testing.T) {
+	type args struct {
+		id string
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantResult string
+	}{{
+		name: "normal",
+		args: args{
+			id: "linuxsuren",
+		},
+		wantResult: `|||
+|---|---|
+| Name | Rick |
+| Location | China |
+| Bio | 程序员，业余开源布道者 |
+| Blog | https://linuxsuren.github.io/open-source-best-practice/ |
+| Twitter | [linuxsuren](https://twitter.com/linuxsuren) |
+| Organization | @opensource-f2f @kubesphere |
+`,
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer gock.Off()
+			mockGitHubUser(tt.args.id)
+			assert.Equalf(t, tt.wantResult, PrintUserAsTable(tt.args.id), "PrintUserAsTable(%v)", tt.args.id)
+		})
+	}
+}
