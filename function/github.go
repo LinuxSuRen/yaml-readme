@@ -160,6 +160,42 @@ func GetIDFromGHLink(link string) string {
 	return reg.ReplaceAllString(link, "")
 }
 
+// PrintUserAsTable generates a table for a GitHub user
+func PrintUserAsTable(id string) (result string) {
+	api := fmt.Sprintf("https://api.github.com/users/%s", id)
+
+	result = `|||
+|---|---|
+`
+
+	var (
+		err  error
+		data map[string]interface{}
+	)
+	if data, err = ghRequestAsMap(api); err == nil {
+		result = result + addWithEmpty("Name", "name", data) +
+			addWithEmpty("Location", "location", data) +
+			addWithEmpty("Bio", "bio", data) +
+			addWithEmpty("Blog", "blog", data) +
+			addWithEmpty("Twitter", "twitter_username", data) +
+			addWithEmpty("Organization", "company", data)
+	}
+	return
+}
+
+func addWithEmpty(title, key string, data map[string]interface{}) (result string) {
+	if val, ok := data[key]; ok && val != "" {
+		desc := val
+		switch key {
+		case "twitter_username":
+			desc = fmt.Sprintf("[%s](https://twitter.com/%s)", val, val)
+		}
+		result = fmt.Sprintf(`| %s | %s |
+`, title, desc)
+	}
+	return
+}
+
 // hasLink determines if there are Markdown style links
 func hasLink(text string) (ok bool) {
 	reg, _ := regexp.Compile(".*\\[.*\\]\\(.*\\)")

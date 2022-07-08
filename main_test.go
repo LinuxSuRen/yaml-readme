@@ -298,6 +298,7 @@ gstatic
 link
 linkOrEmpty
 printContributors
+printGHTable
 printHelp
 printStarHistory
 printToc
