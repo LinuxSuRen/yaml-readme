@@ -8,3 +8,4 @@ plugins/vscode/yaml-readme/node_modules/
 *.vsix
 */**/.DS_Store
 .DS_Store
+.vscode-test
