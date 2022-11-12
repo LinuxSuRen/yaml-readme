@@ -3,6 +3,7 @@
 const vscode = require('vscode');
 const cp = require('child_process');
 const fs = require('fs');
+const cmd = require('./command');
 
 function getFirstLine(filePath) {
 	const data = fs.readFileSync(filePath);
@@ -30,28 +31,16 @@ function activate(context) {
 
 			let filename = vscode.window.activeTextEditor.document.fileName
 			let metadata = getFirstLine(filename)
-			vscode.window.showInformationMessage(metadata + "===" + metadata.startsWith("#!yaml-readme"));
+			// vscode.window.showInformationMessage(metadata + "===" + metadata.startsWith("#!yaml-readme"));
 			if (metadata.startsWith("#!yaml-readme")) {
-				metadata = metadata.replace("#!yaml-readme ", "")
+				let command = cmd.generateCommand(metadata, wf, filename)
 
-				let pattern = ""
-				let output = ""
-				const items = metadata.split(" ")
-				for (var i = 0; i < items.length; i++) {
-					const item = items[i]
-					if (item == "-p") {
-						pattern = wf + "/" + items[++i]
-					} else if (item == "--output") {
-						output = wf + "/" + items[++i]
-					}
-				}
-
-				vscode.window.showInformationMessage(`yaml-readme -p "${pattern}" -t "${filename}" > ${output}`)
-				cp.exec(`yaml-readme -p "${pattern}" -t "${filename}" > ${output}`, (err) => {
+				// vscode.window.showInformationMessage(`yaml-readme -p "${pattern}" -t "${filename}" > ${output}`)
+				cp.exec(`${command[0]} > ${command[1]}`, (err) => {
 					if (err) {
 						console.log('error: ' + err);
 					}
-					vscode.commands.executeCommand("markdown.showPreviewToSide", vscode.Uri.file(`${output}`));
+					vscode.commands.executeCommand("markdown.showPreviewToSide", vscode.Uri.file(`${command[1]}`));
 				});
 			}
 		}  else {
