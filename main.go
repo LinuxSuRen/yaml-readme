@@ -224,6 +224,9 @@ func getFuncMap(readmeTpl string) template.FuncMap {
 		"printVisitorCount": func(id string) string {
 			return fmt.Sprintf(`![Visitor Count](https://profile-counter.glitch.me/%s/count.svg)`, id)
 		},
+		"printPages": func(owner string) string {
+			return function.PrintPages(owner)
+		},
 		"render":       dataRender,
 		"gh":           function.GithubUserLink,
 		"ghs":          function.GitHubUsersLink,
