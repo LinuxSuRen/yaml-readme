@@ -300,6 +300,7 @@ linkOrEmpty
 printContributors
 printGHTable
 printHelp
+printPages
 printStarHistory
 printToc
 printVisitorCount

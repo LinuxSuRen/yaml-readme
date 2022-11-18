@@ -39,6 +39,31 @@ func PrintContributors(owner, repo string) (output string) {
 	return
 }
 
+// PrintPages prints the repositories which enabled pages
+func PrintPages(owner string) (output string) {
+	api := fmt.Sprintf("https://api.github.com/users/%s/repos?type=owner&per_page=100&sort=updated&username=%s", owner, owner)
+
+	var (
+		repos []map[string]interface{}
+		err   error
+	)
+
+	if repos, err = ghRequestAsSlice(api); err == nil {
+		var text string
+		for i := 0; i < len(repos); i++ {
+			repo := strings.TrimSpace(generateRepo(repos[i]))
+			if repo != "" {
+				text = text + repo + "\n"
+			}
+		}
+
+		output = fmt.Sprintf(`||||
+|---|---|---|
+%s`, strings.TrimSpace(text))
+	}
+	return
+}
+
 func ghRequest(api string) (data []byte, err error) {
 	var (
 		resp *http.Response
@@ -73,6 +98,24 @@ func ghRequestAsMap(api string) (data map[string]interface{}, err error) {
 	var byteData []byte
 	if byteData, err = ghRequest(api); err == nil {
 		err = json.Unmarshal(byteData, &data)
+	}
+	return
+}
+
+var pageRepoTemplate = `
+{{if eq .has_pages true}}  
+|{{.name}}|![GitHub Repo stars](https://img.shields.io/github/stars/{{.owner.login}}/{{.name}}?style=social)|[view](https://{{.owner.login}}.github.io/{{.name}}/)| 
+{{end}}
+`
+
+func generateRepo(repo interface{}) (output string) {
+	var tpl *template.Template
+	var err error
+	if tpl, err = template.New("repo").Parse(pageRepoTemplate); err == nil {
+		buf := bytes.NewBuffer([]byte{})
+		if err = tpl.Execute(buf, repo); err == nil {
+			output = buf.String()
+		}
 	}
 	return
 }

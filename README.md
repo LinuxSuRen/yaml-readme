@@ -41,6 +41,7 @@ Flags:
 | `printContributors` | `{{printContributors "linuxsuren" "yaml-readme"}}` | Print all the contributors of an repository                             |
 | `printStarHistory`  | `{{printStarHistory "linuxsuren" "yaml-readme"}}`  | Print the star history of an repository                                 |
 | `printVisitorCount` | `{{printVisitorCount "repo-id"}}`                  | Print the visitor count chart of an repository                          |
+| `printPages`        | `{{printPages "linuxsuren"}}`                      | Print all the repositories that pages enabled                           |
 | `render`            | `{{render true}}`                                  | Make the value be readable, turn `true` to `:white_check_mark:`         |
 | `gh`                | `{{gh "linuxsuren" true}}`                         | Render a GitHub user to be a link                                       | 
 | `ghs`               | `{{ghs "linuxsuren, linuxsuren" ","}}`             | Render multiple GitHub users to be links                                |
