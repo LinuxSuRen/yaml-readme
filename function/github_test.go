@@ -120,6 +120,16 @@ func mockGitHubUser(id string) {
 		Get(fmt.Sprintf("/users/%s", id)).Reply(http.StatusOK).File(fmt.Sprintf("data/%s.json", id))
 }
 
+func mockUserRepos(owner string) {
+	gock.New("https://api.github.com").
+		Get(fmt.Sprintf("/users/%s/repos", owner)).
+		MatchParam("type", "owner").
+		MatchParam("per_page", "100").
+		MatchParam("sort", "updated").
+		MatchParam("username", owner).
+		Reply(http.StatusOK).File("data/repos.json")
+}
+
 func TestGitHubUsersLink(t *testing.T) {
 	type args struct {
 		ids string
@@ -327,6 +337,30 @@ func TestPrintUserAsTable(t *testing.T) {
 			defer gock.Off()
 			mockGitHubUser(tt.args.id)
 			assert.Equalf(t, tt.wantResult, PrintUserAsTable(tt.args.id), "PrintUserAsTable(%v)", tt.args.id)
+		})
+	}
+}
+
+func TestPrintPages(t *testing.T) {
+	type args struct {
+		owner string
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantOutput string
+	}{{
+		name: "normal",
+		args: args{owner: "linuxsuren"},
+		wantOutput: `||||
+|---|---|---|
+|Hello-World|![GitHub Repo stars](https://img.shields.io/github/stars/linuxsuren/Hello-World?style=social)|[view](https://linuxsuren.github.io/Hello-World/)|`,
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer gock.Off()
+			mockUserRepos(tt.args.owner)
+			assert.Equalf(t, tt.wantOutput, PrintPages(tt.args.owner), "PrintPages(%v)", tt.args.owner)
 		})
 	}
 }

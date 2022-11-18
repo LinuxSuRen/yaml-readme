@@ -52,10 +52,9 @@ func PrintPages(owner string) (output string) {
 		var text string
 		for i := 0; i < len(repos); i++ {
 			repo := strings.TrimSpace(generateRepo(repos[i]))
-			if repo == "" {
-				continue
+			if repo != "" {
+				text = text + repo + "\n"
 			}
-			text = text + repo + "\n"
 		}
 
 		output = fmt.Sprintf(`||||
