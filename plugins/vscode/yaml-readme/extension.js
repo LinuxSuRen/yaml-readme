@@ -4,6 +4,9 @@ const vscode = require('vscode');
 const cp = require('child_process');
 const fs = require('fs');
 const cmd = require('./command');
+const {TestTask, HelloReply} = require('./server_pb');
+const {RunnerClient} = require('./server_grpc_web_pb');
+global.XMLHttpRequest = require('xhr2');
 
 function getFirstLine(filePath) {
 	const data = fs.readFileSync(filePath);
@@ -49,8 +52,34 @@ function activate(context) {
 			vscode.window.showErrorMessage(message);
 		}
 	});
+	let atest = vscode.commands.registerCommand('atest', function() {
+		if(vscode.workspace.workspaceFolders !== undefined) {
+			let filename = vscode.window.activeTextEditor.document.fileName
+			const addr = vscode.workspace.getConfiguration().get('yaml-readme.server')
 
-	context.subscriptions.push(disposable);
+			var c = new RunnerClient(addr)
+			console.log(c)
+			let task = new TestTask()
+			task.setKind('suite')
+
+			const data = fs.readFileSync(filename);
+			task.setData(data.toString())
+			try {
+				let a = c.run(task, {}, (err,resp) => {
+					console.log(err,resp)
+				})
+				console.log(a)
+			} catch(e){
+				console.log(e)
+			}
+		}  else {
+			let message = "YOUR-EXTENSION: Working folder not found, open a folder an try again" ;
+		
+			vscode.window.showErrorMessage(message);
+		}
+	})
+
+	context.subscriptions.push(disposable,atest);
 }
 
 // this method is called when your extension is deactivated
