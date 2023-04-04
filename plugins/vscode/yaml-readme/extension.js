@@ -4,17 +4,10 @@ const vscode = require('vscode');
 const cp = require('child_process');
 const fs = require('fs');
 const cmd = require('./command');
-const {TestTask, HelloReply} = require('./server_pb');
-const {RunnerClient} = require('./server_grpc_web_pb');
-global.XMLHttpRequest = require('xhr2');
-
 
 const grpc = require('@grpc/grpc-js');
-
 const protoLoader = require('@grpc/proto-loader');
-
 const PROTO_PATH = __dirname +'/server.proto';
-
 const packageDefinition = protoLoader.loadSync(
   PROTO_PATH, { 
    keepCase: true,
@@ -77,43 +70,28 @@ function activate(context) {
 			let filename = vscode.window.activeTextEditor.document.fileName
 			const addr = vscode.workspace.getConfiguration().get('yaml-readme.server')
 			apiConsole.show()
-
-			var c = new RunnerClient(addr)
-			let task = new TestTask()
-			task.setKind('suite')
+			let task 
 
 			let editor = vscode.window.activeTextEditor
 			if (editor) {
 				let selection = editor.selection
 				let text = editor.document.getText(selection)
 				if (text !== undefined && text !== '') {
-					task.setData(text)
+					task = text
 				}
 			}
 
-			if (task.getData() === undefined || task.getData() === '') {
+			if (task === undefined || task === '') {
 				const data = fs.readFileSync(filename);
-				task.setData(data.toString())
-			}
-
-			apiConsole.appendLine("start to run")
-			try {
-				let a = c.run(task, {}, (err,resp) => {
-					console.log(err,resp)
-				})
-				console.log(a)
-			} catch(e){
-				console.log(e)
+				task = data.toString()
 			}
 
 			const client = new serverProto.Runner(addr, grpc.credentials.createInsecure());
-			let employeeIdList = [1,2,3];
 			client.run({
 				kind: "suite",
-				data: data.toString()
+				data: task
 			} , function(err, response) {
-			  console.log('Data:', response); // API response
-			  console.log(err);
+				apiConsole.appendLine(response.message);
 			 });
 		}  else {
 			let message = "YOUR-EXTENSION: Working folder not found, open a folder an try again" ;
