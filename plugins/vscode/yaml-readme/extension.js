@@ -8,6 +8,8 @@ const {TestTask, HelloReply} = require('./server_pb');
 const {RunnerClient} = require('./server_grpc_web_pb');
 global.XMLHttpRequest = require('xhr2');
 
+const apiConsole = vscode.window.createOutputChannel("API Testing")
+
 function getFirstLine(filePath) {
 	const data = fs.readFileSync(filePath);
   return data.toString().split('\n')[0];
@@ -56,14 +58,16 @@ function activate(context) {
 		if(vscode.workspace.workspaceFolders !== undefined) {
 			let filename = vscode.window.activeTextEditor.document.fileName
 			const addr = vscode.workspace.getConfiguration().get('yaml-readme.server')
+			apiConsole.show()
 
 			var c = new RunnerClient(addr)
-			console.log(c)
 			let task = new TestTask()
 			task.setKind('suite')
 
 			const data = fs.readFileSync(filename);
 			task.setData(data.toString())
+
+			apiConsole.appendLine("start to run")
 			try {
 				let a = c.run(task, {}, (err,resp) => {
 					console.log(err,resp)
