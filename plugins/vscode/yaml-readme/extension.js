@@ -8,6 +8,24 @@ const {TestTask, HelloReply} = require('./server_pb');
 const {RunnerClient} = require('./server_grpc_web_pb');
 global.XMLHttpRequest = require('xhr2');
 
+
+const grpc = require('@grpc/grpc-js');
+
+const protoLoader = require('@grpc/proto-loader');
+
+const PROTO_PATH = __dirname +'/server.proto';
+
+const packageDefinition = protoLoader.loadSync(
+  PROTO_PATH, { 
+   keepCase: true,
+   longs: String,
+   enums: String,
+   defaults: true,
+   oneofs: true,
+});
+
+const serverProto = grpc.loadPackageDefinition(packageDefinition).server;
+
 const apiConsole = vscode.window.createOutputChannel("API Testing")
 
 function getFirstLine(filePath) {
@@ -76,6 +94,16 @@ function activate(context) {
 			} catch(e){
 				console.log(e)
 			}
+
+			const client = new serverProto.Runner(addr, grpc.credentials.createInsecure());
+			let employeeIdList = [1,2,3];
+			client.run({
+				kind: "suite",
+				data: data.toString()
+			} , function(err, response) {
+			  console.log('Data:', response); // API response
+			  console.log(err);
+			 });
 		}  else {
 			let message = "YOUR-EXTENSION: Working folder not found, open a folder an try again" ;
 		
