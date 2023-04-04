@@ -91,7 +91,11 @@ function activate(context) {
 				kind: "suite",
 				data: task
 			} , function(err, response) {
-				apiConsole.appendLine(response.message);
+				if (err !== undefined) {
+					apiConsole.appendLine(err);
+				} else {
+					apiConsole.appendLine(response.message);
+				}
 			 });
 		}  else {
 			let message = "YOUR-EXTENSION: Working folder not found, open a folder an try again" ;
