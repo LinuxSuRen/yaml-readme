@@ -2,7 +2,7 @@
 	"name": "yaml-readme",
 	"displayName": "yaml-readme",
 	"description": "A helper to generate the READE file automatically.",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"repository": "https://github.com/linuxsuren/yaml-readme",
 	"engines": {
 		"vscode": "^1.68.0"
@@ -92,7 +92,8 @@
 	"scripts": {
 		"lint": "eslint .",
 		"pretest": "npm run lint",
-		"test": "node ./test/runTest.js"
+		"test": "node ./test/runTest.js",
+		"deploy": "vsce package && vsce publish"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.2.0",
