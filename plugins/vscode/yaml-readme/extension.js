@@ -82,8 +82,19 @@ function activate(context) {
 			let task = new TestTask()
 			task.setKind('suite')
 
-			const data = fs.readFileSync(filename);
-			task.setData(data.toString())
+			let editor = vscode.window.activeTextEditor
+			if (editor) {
+				let selection = editor.selection
+				let text = editor.document.getText(selection)
+				if (text !== undefined && text !== '') {
+					task.setData(text)
+				}
+			}
+
+			if (task.getData() === undefined || task.getData() === '') {
+				const data = fs.readFileSync(filename);
+				task.setData(data.toString())
+			}
 
 			apiConsole.appendLine("start to run")
 			try {
