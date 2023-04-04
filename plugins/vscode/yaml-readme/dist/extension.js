@@ -43377,8 +43377,7 @@ function activate(context) {
         kind: "suite",
         data: task
       }, function(err, response) {
-        console.log(err, response);
-        if (err !== void 0) {
+        if (err !== void 0 && err !== null) {
           apiConsole.appendLine(err);
         } else {
           apiConsole.appendLine(response.message);
