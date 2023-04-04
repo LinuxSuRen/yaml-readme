@@ -2,7 +2,7 @@
 	"name": "yaml-readme",
 	"displayName": "yaml-readme",
 	"description": "A helper to generate the READE file automatically.",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"repository": "https://github.com/linuxsuren/yaml-readme",
 	"engines": {
 		"vscode": "^1.68.0"
@@ -93,7 +93,7 @@
 		"clean": "rm -rf ./dist/* && rm *.vsix",
 		"package": "vsce package",
 		"vscode:prepublish": "npm run compile",
-		"bundle": "esbuild extension.js --bundle --outdir=dist --external:vscode --format=cjs --platform=node",
+		"bundle": "esbuild extension.js --bundle --outdir=dist --external:vscode --format=cjs --platform=node && cp server.proto dist",
 		"lint": "eslint .",
 		"pretest": "npm run lint",
 		"test": "node ./test/runTest.js",

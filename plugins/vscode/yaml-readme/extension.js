@@ -91,7 +91,7 @@ function activate(context) {
 				kind: "suite",
 				data: task
 			} , function(err, response) {
-				if (err !== undefined) {
+				if (err !== undefined && err !== null) {
 					apiConsole.appendLine(err);
 				} else {
 					apiConsole.appendLine(response.message);
