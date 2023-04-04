@@ -2,7 +2,7 @@
 	"name": "yaml-readme",
 	"displayName": "yaml-readme",
 	"description": "A helper to generate the READE file automatically.",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"repository": "https://github.com/linuxsuren/yaml-readme",
 	"engines": {
 		"vscode": "^1.68.0"
@@ -95,7 +95,6 @@
 		"test": "node ./test/runTest.js"
 	},
 	"devDependencies": {
-		"@grpc/proto-loader": "~0.5.4",
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "16.x",
@@ -110,13 +109,13 @@
 		"webpack-cli": "~3.3.11"
 	},
 	"dependencies": {
+		"@grpc/proto-loader": "~0.5.4",
 		"lodash": "~4.17.0",
 		"google-protobuf": "~3.14.0",
 		"@grpc/grpc-js": "~1.0.5",
 		"q": "^1.5.1",
 		"remark": "^14.0.2",
 		"remark-admonitions": "^1.2.1",
-		"remark-html": "^15.0.1",
-		"xhr2": "^0.2.1"
+		"remark-html": "^15.0.1"
 	}
 }
