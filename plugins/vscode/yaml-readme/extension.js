@@ -5,6 +5,22 @@ const cp = require('child_process');
 const fs = require('fs');
 const cmd = require('./command');
 
+const grpc = require('@grpc/grpc-js');
+const protoLoader = require('@grpc/proto-loader');
+const PROTO_PATH = __dirname +'/server.proto';
+const packageDefinition = protoLoader.loadSync(
+  PROTO_PATH, { 
+   keepCase: true,
+   longs: String,
+   enums: String,
+   defaults: true,
+   oneofs: true,
+});
+
+const serverProto = grpc.loadPackageDefinition(packageDefinition).server;
+
+const apiConsole = vscode.window.createOutputChannel("API Testing")
+
 function getFirstLine(filePath) {
 	const data = fs.readFileSync(filePath);
   return data.toString().split('\n')[0];
@@ -49,8 +65,42 @@ function activate(context) {
 			vscode.window.showErrorMessage(message);
 		}
 	});
+	let atest = vscode.commands.registerCommand('atest', function() {
+		if(vscode.workspace.workspaceFolders !== undefined) {
+			let filename = vscode.window.activeTextEditor.document.fileName
+			const addr = vscode.workspace.getConfiguration().get('yaml-readme.server')
+			apiConsole.show()
+			let task 
 
-	context.subscriptions.push(disposable);
+			let editor = vscode.window.activeTextEditor
+			if (editor) {
+				let selection = editor.selection
+				let text = editor.document.getText(selection)
+				if (text !== undefined && text !== '') {
+					task = text
+				}
+			}
+
+			if (task === undefined || task === '') {
+				const data = fs.readFileSync(filename);
+				task = data.toString()
+			}
+
+			const client = new serverProto.Runner(addr, grpc.credentials.createInsecure());
+			client.run({
+				kind: "suite",
+				data: task
+			} , function(err, response) {
+				apiConsole.appendLine(response.message);
+			 });
+		}  else {
+			let message = "YOUR-EXTENSION: Working folder not found, open a folder an try again" ;
+		
+			vscode.window.showErrorMessage(message);
+		}
+	})
+
+	context.subscriptions.push(disposable,atest);
 }
 
 // this method is called when your extension is deactivated
