@@ -3,12 +3,13 @@ package function
 import (
 	"bytes"
 	"fmt"
-	"github.com/h2non/gock"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
+
+	"github.com/h2non/gock"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_printContributor(t *testing.T) {
@@ -361,6 +362,35 @@ func TestPrintPages(t *testing.T) {
 			defer gock.Off()
 			mockUserRepos(tt.args.owner)
 			assert.Equalf(t, tt.wantOutput, PrintPages(tt.args.owner), "PrintPages(%v)", tt.args.owner)
+		})
+	}
+}
+
+func TestGetTopN(t *testing.T) {
+	tests := []struct {
+		name   string
+		values map[string]int
+		count  int
+		expect map[string]int
+	}{{
+		name: "normal",
+		values: map[string]int{
+			"linuxsuren": 1,
+			"fake":       2,
+			"test":       3,
+			"rick":       4,
+		},
+		count: 3,
+		expect: map[string]int{
+			"rick": 4,
+			"test": 3,
+			"fake": 2,
+		},
+	}}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			results := getTopN(tt.values, tt.count)
+			assert.Equal(t, tt.expect, results)
 		})
 	}
 }

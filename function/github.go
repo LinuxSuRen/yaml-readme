@@ -9,8 +9,73 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 )
+
+func PrintStargazers(owner, repo string) (output string) {
+	api := fmt.Sprintf("https://api.github.com/repos/%s/%s/stargazers", owner, repo)
+
+	var (
+		users     []map[string]interface{}
+		companies map[string]int = make(map[string]int)
+		err       error
+	)
+
+	if users, err = ghRequestAsSlice(api); err == nil {
+		for _, user := range users {
+			api := fmt.Sprintf("https://api.github.com/users/%s", user["login"])
+
+			var (
+				data map[string]interface{}
+			)
+			if data, err = ghRequestAsMap(api); err == nil {
+				name := data["company"]
+				if name == nil {
+					continue
+				}
+				if count, ok := companies[name.(string)]; ok {
+					companies[name.(string)] = count + 1
+				} else {
+					companies[name.(string)] = 1
+				}
+			}
+		}
+	}
+
+	companies = getTopN(companies, 5)
+	for name, count := range companies {
+		output = output + fmt.Sprintf("<tr><td>%s</td><td>%d</td><tr>", name, count)
+	}
+	return fmt.Sprintf("<table>%s</table>", output)
+}
+
+func getTopN(values map[string]int, count int) (result map[string]int) {
+	tops := []int{}
+	for _, v := range values {
+		tops = append(tops, v)
+	}
+
+	sort.Slice(tops, func(i, j int) bool {
+		return tops[i] > tops[j]
+	})
+
+	if len(tops) < count {
+		count = len(tops)
+	} else {
+		tops = tops[:count]
+	}
+
+	result = make(map[string]int, count)
+	for _, v := range tops {
+		for k, vul := range values {
+			if vul == v {
+				result[k] = vul
+			}
+		}
+	}
+	return result
+}
 
 // PrintContributors from a GitHub repository
 func PrintContributors(owner, repo string) (output string) {
