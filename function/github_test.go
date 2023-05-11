@@ -373,18 +373,22 @@ func TestGetTopN(t *testing.T) {
 		count  int
 		expect map[string]int
 	}{{
-		name: "normal",
-		values: map[string]int{
-			"linuxsuren": 1,
-			"fake":       2,
-			"test":       3,
-			"rick":       4,
-		},
-		count: 3,
+		name:   "normal",
+		values: items,
+		count:  3,
 		expect: map[string]int{
-			"rick": 4,
-			"test": 3,
-			"fake": 2,
+			"seven": 11,
+			"six":   10,
+			"five":  9,
+		},
+	}, {
+		name: "less data",
+		values: map[string]int{
+			"linuxsuren": 2,
+		},
+		count: 2,
+		expect: map[string]int{
+			"linuxsuren": 2,
 		},
 	}}
 	for _, tt := range tests {
@@ -392,5 +396,25 @@ func TestGetTopN(t *testing.T) {
 			results := getTopN(tt.values, tt.count)
 			assert.Equal(t, tt.expect, results)
 		})
+	}
+}
+
+var items = map[string]int{
+	"linuxsuren": 1,
+	"fake":       2,
+	"test":       3,
+	"rick":       4,
+	"one":        5,
+	"two":        6,
+	"three":      7,
+	"four":       8,
+	"five":       9,
+	"six":        10,
+	"seven":      11,
+}
+
+func BenchmarkGetTopN(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		getTopN(items, 3)
 	}
 }
