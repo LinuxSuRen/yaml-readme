@@ -6,4 +6,4 @@ copy: build
 test:
 	go test ./...
 benchmark:
-	go test -benchmem -run=^$$ -bench ^BenchmarkGetTopN$$ github.com/linuxsuren/yaml-readme/function
+	go test -benchmem -run=^$$ -bench ^*$$ github.com/linuxsuren/yaml-readme/function

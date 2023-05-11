@@ -418,3 +418,9 @@ func BenchmarkGetTopN(b *testing.B) {
 		getTopN(items, 3)
 	}
 }
+
+func BenchmarkGitHubEmojiLink(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		GitHubEmojiLink("linuxsuren")
+	}
+}
