@@ -25,6 +25,7 @@ var logger *log.Logger
 type option struct {
 	pattern       string
 	templateFile  string
+	output        string
 	includeHeader bool
 	sortBy        string
 	groupBy       string
@@ -154,10 +155,20 @@ func (o *option) runE(cmd *cobra.Command, args []string) (err error) {
 	}
 
 	// render it with grouped data
+	var out io.Writer = cmd.OutOrStdout()
+	if o.output != "" {
+		var file *os.File
+		if file, err = os.Create(o.output); err != nil {
+			err = fmt.Errorf("failed to create output file %q, error: %v", o.output, err)
+			return
+		}
+		defer file.Close()
+		out = file
+	}
 	if o.groupBy != "" {
-		err = renderTemplate(readmeTpl, groupData, cmd.OutOrStdout())
+		err = renderTemplate(readmeTpl, groupData, out)
 	} else {
-		err = renderTemplate(readmeTpl, items, cmd.OutOrStdout())
+		err = renderTemplate(readmeTpl, items, out)
 	}
 	return
 }
@@ -323,6 +334,8 @@ Some functions rely on the GitHub API, in order to avoid X-RateLimit-Limit error
 		"The glob pattern with Golang spec to find files")
 	flags.StringVarP(&opt.templateFile, "template", "t", "README.tpl",
 		"The template file which should follow Golang template spec")
+	flags.StringVarP(&opt.output, "output", "o", "",
+		"Write the render result to this file instead of the standard output")
 	flags.BoolVarP(&opt.includeHeader, "include-header", "", true,
 		"Indicate if include a notice header on the top of the README file")
 	flags.StringVarP(&opt.sortBy, "sort-by", "", "",

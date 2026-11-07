@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 )
@@ -562,4 +564,21 @@ fullpath`,
 			assert.Equalf(t, tt.wantStdout, stdout.String(), "printVariables(%v)", stdout)
 		})
 	}
+}
+
+func TestOutputFlag(t *testing.T) {
+	outFile := filepath.Join(t.TempDir(), "out.md")
+	cmd := newRootCommand()
+	cmd.SetArgs([]string{
+		"--template", "function/data/README-group.tpl",
+		"--pattern", "function/data/*.yaml",
+		"--group-by", "year",
+		"--include-header=false",
+		"--output", outFile,
+	})
+	assert.Nil(t, cmd.Execute())
+
+	data, err := os.ReadFile(outFile)
+	assert.Nil(t, err)
+	assert.Contains(t, string(data), "Year: 2022")
 }
