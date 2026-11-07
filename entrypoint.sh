@@ -47,7 +47,17 @@ then
   hd i "$tool"
 fi
 
-yaml-readme -p "$pattern" --sort-by "$sortby" --group-by "$groupby" --template "$template" > "$output"
+# Render to a temp file first: on a render failure the CLI may print
+# usage/help text to stdout, which must never end up as the README.
+tmp_output=$(mktemp)
+if ! yaml-readme -p "$pattern" --sort-by "$sortby" --group-by "$groupby" --template "$template" > "$tmp_output"; then
+  echo "******************************"
+  echo "* Error: render failed, the README is left untouched."
+  echo "******************************"
+  rm -f "$tmp_output"
+  exit 1
+fi
+mv "$tmp_output" "$output"
 
 if [ "$push" = "true" ]
 then
