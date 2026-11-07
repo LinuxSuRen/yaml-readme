@@ -2,6 +2,7 @@ package function
 
 import (
 	"fmt"
+	"html/template"
 	"sort"
 	"strings"
 )
@@ -14,7 +15,10 @@ import (
 // nameField - the item field rendered as the child leaf, e.g. "name"
 // subField  - an optional second item field appended to the leaf, e.g. "creator".
 // Pass an empty string to skip it.
-func PrintMindmap(data interface{}, root, nameField, subField string) string {
+//
+// The returned value is template.HTML so that group names containing characters
+// like '&' are not HTML-escaped by the template engine.
+func PrintMindmap(data interface{}, root, nameField, subField string) template.HTML {
 	grouped, ok := data.(map[string][]map[string]interface{})
 	if !ok {
 		return ""
@@ -45,7 +49,7 @@ func PrintMindmap(data interface{}, root, nameField, subField string) string {
 		}
 	}
 	buf.WriteString("```\n")
-	return buf.String()
+	return template.HTML(buf.String())
 }
 
 func mindmapFieldString(item map[string]interface{}, field string) string {
