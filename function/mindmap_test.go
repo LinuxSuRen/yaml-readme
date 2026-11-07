@@ -21,11 +21,11 @@ func TestPrintMindmap(t *testing.T) {
 	expect := "```mermaid\n" +
 		"mindmap\n" +
 		"  root((Awesome Patent))\n" +
-		"  Locomotion\n" +
-		"    Robot balance control （CN103634206A） · UBTech\n" +
-		"    Gait planning\n" +
-		"  VLA Model\n" +
-		"    Vision-language-action policy · Galbot\n" +
+		"    Locomotion\n" +
+		"      Robot balance control （CN103634206A） · UBTech\n" +
+		"      Gait planning\n" +
+		"    VLA Model\n" +
+		"      Vision-language-action policy · Galbot\n" +
 		"```\n"
 	assert.Equal(t, template.HTML(expect), out)
 }

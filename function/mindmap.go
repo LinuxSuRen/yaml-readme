@@ -35,7 +35,7 @@ func PrintMindmap(data interface{}, root, nameField, subField string) template.H
 	buf.WriteString("  root((" + sanitizeMindmapText(root) + "))\n")
 
 	for _, group := range groups {
-		buf.WriteString("  " + sanitizeMindmapText(group) + "\n")
+		buf.WriteString("    " + sanitizeMindmapText(group) + "\n")
 		for _, item := range grouped[group] {
 			leaf := mindmapFieldString(item, nameField)
 			if subField != "" {
@@ -44,7 +44,7 @@ func PrintMindmap(data interface{}, root, nameField, subField string) template.H
 				}
 			}
 			if leaf != "" {
-				buf.WriteString("    " + leaf + "\n")
+				buf.WriteString("      " + leaf + "\n")
 			}
 		}
 	}
