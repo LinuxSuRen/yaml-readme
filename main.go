@@ -238,18 +238,20 @@ func getFuncMap(readmeTpl string) template.FuncMap {
 		"printPages": func(owner string) string {
 			return function.PrintPages(owner)
 		},
-		"render":       dataRender,
-		"gh":           function.GithubUserLink,
-		"ghs":          function.GitHubUsersLink,
-		"ghEmoji":      function.GitHubEmojiLink,
-		"link":         function.Link,
-		"linkOrEmpty":  function.LinkOrEmpty,
-		"twitterLink":  function.TwitterLink,
-		"youTubeLink":  function.YouTubeLink,
-		"gstatic":      function.GStatic,
-		"ghID":         function.GetIDFromGHLink,
-		"printGHTable": function.PrintUserAsTable,
-		"printMindmap": function.PrintMindmap,
+		"render":           dataRender,
+		"gh":               function.GithubUserLink,
+		"ghs":              function.GitHubUsersLink,
+		"ghEmoji":          function.GitHubEmojiLink,
+		"link":             function.Link,
+		"linkOrEmpty":      function.LinkOrEmpty,
+		"twitterLink":      function.TwitterLink,
+		"youTubeLink":      function.YouTubeLink,
+		"gstatic":          function.GStatic,
+		"ghID":             function.GetIDFromGHLink,
+		"printGHTable":     function.PrintUserAsTable,
+		"printMindmap":     function.PrintMindmap,
+		"printYearChart":   function.PrintYearChart,
+		"printRegionChart": function.PrintRegionChart,
 	}
 }
 

@@ -304,9 +304,11 @@ printGHTable
 printHelp
 printMindmap
 printPages
+printRegionChart
 printStarHistory
 printToc
 printVisitorCount
+printYearChart
 render
 twitterLink
 youTubeLink`,
