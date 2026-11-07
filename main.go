@@ -238,6 +238,7 @@ func getFuncMap(readmeTpl string) template.FuncMap {
 		"gstatic":      function.GStatic,
 		"ghID":         function.GetIDFromGHLink,
 		"printGHTable": function.PrintUserAsTable,
+		"printMindmap": function.PrintMindmap,
 	}
 }
 

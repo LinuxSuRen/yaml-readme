@@ -48,6 +48,7 @@ Flags:
 | `link`              | `{{link "text" "link"}}`                           | Print a Markdown style link                                             |
 | `linkOrEmpty`       | `{{linkOrEmpty "text" "link"}}`                    | Print a Markdown style link or empty if text is none                    |
 | `ghEmoji`           | `{{ghEmoji "linuxsuren"}}`                         | Print a Markdown style link with Emoji                                  |
+| `printMindmap`      | `{{printMindmap . "Root" "name" "creator"}}`       | Render grouped items as a Mermaid mindmap (GitHub renders it natively)   |
 
 > Want to use more powerful functions? Please feel free to see also [Sprig](http://masterminds.github.io/sprig/).
 > You could use all functions from both built-in and Sprig.
