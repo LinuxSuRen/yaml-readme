@@ -300,6 +300,7 @@ linkOrEmpty
 printContributors
 printGHTable
 printHelp
+printMindmap
 printPages
 printStarHistory
 printToc
