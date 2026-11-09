@@ -3,10 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"github.com/Masterminds/sprig"
-	"github.com/linuxsuren/yaml-readme/function"
-	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
 	"html/template"
 	"io"
 	"io/ioutil"
@@ -18,6 +14,11 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/Masterminds/sprig"
+	"github.com/linuxsuren/yaml-readme/function"
+	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
 )
 
 var logger *log.Logger
@@ -217,6 +218,9 @@ func getFuncMap(readmeTpl string) template.FuncMap {
 		},
 		"printContributors": func(owner, repo string) template.HTML {
 			return template.HTML(function.PrintContributors(owner, repo))
+		},
+		"printStargazers": func(owner, repo string) template.HTML {
+			return template.HTML(function.PrintStargazers(owner, repo))
 		},
 		"printStarHistory": func(owner, repo string) string {
 			return printStarHistory(owner, repo)
